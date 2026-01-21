@@ -20,10 +20,10 @@ export default function Hero() {
             negócios.
           </p>
 
-          <div className="mt-8 flex justify-center gap-4 md:justify-start">
+          <div className="mt-8 flex max-w-xl flex-nowrap items-center justify-center gap-3 md:justify-start">
             <a
               href="#projects"
-              className="rounded-xl bg-white px-6 py-3 text-black transition 
+              className="rounded-xl bg-white px-5 py-3 text-black transition 
 hover:bg-zinc-200"
             >
               Ver projetos
@@ -31,10 +31,23 @@ hover:bg-zinc-200"
 
             <a
               href="#contact"
-              className="rounded-xl border border-white/20 px-6 py-3 transition 
+              className="rounded-xl border border-white/20 px-5 py-3 transition 
 hover:bg-white/5"
             >
               Contato
+            </a>
+            <a
+              href="/CV-Caique.pdf"
+              download
+              className="rounded-xl border border-white/20 px-5 py-3 transition hover:bg-white/5"
+            >
+              Download CV
+            </a>
+            <a
+              href="#skills"
+              className="rounded-xl border border-white/20 px-5 py-3 transition hover:bg-white/5"
+            >
+              Ver skills
             </a>
           </div>
         </div>

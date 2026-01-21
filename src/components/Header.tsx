@@ -20,6 +20,11 @@ export default function Header() {
               Contato
             </a>
           </li>
+          <li>
+            <a href="#skills" className="hover:text-black">
+              Ver skills
+            </a>
+          </li>
         </ul>
       </nav>
     </header>
