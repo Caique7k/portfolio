@@ -20,8 +20,15 @@ export const projects = [
     title: "Painel de Chamadas",
     description:
       "Painel em tempo real para controle de chamadas em ambientes como clínicas e consultórios.",
-    techs: ["NextJS", "WebSocket", "Python", "PostgreSQL"],
+    techs: ["Next.js", "WebSocket", "Python", "PostgreSQL"],
     github: "https://github.com/Caique7k/painel-senhas.git",
     demo: "#",
+  },
+  {
+    title: "Painel E-SUS",
+    description:
+      "Sistema de chamadas desenvolvido para a rede E-SUS, focado em organização de filas, tempo real e fluxo eficiente de atendimento em ambientes de saúde.",
+    techs: ["Next.js", "NestJS", "JavaScript", "PostgreSQL"],
+    note: "Projeto profissional — código privado",
   },
 ];
