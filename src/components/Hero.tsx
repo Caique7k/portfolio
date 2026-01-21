@@ -13,11 +13,14 @@ export default function Hero() {
       <div className="relative z-10 grid max-w-6xl gap-12 px-6 md:grid-cols-2 items-center">
         {/* TEXTO */}
         <div className="text-center md:text-left">
-          <h1 className="text-4xl font-bold md:text-6xl">Desenvolvedor Web</h1>
+          <h1 className="text-4xl font-bold md:text-6xl">
+            Desenvolvedor Fullstack
+          </h1>
 
           <p className="mt-4 max-w-md text-zinc-400">
-            Crio sites e sistemas simples, rápidos e funcionais para pequenos
-            negócios.
+            Desenvolvedor Fullstack e cofundador da LaborWaze. Atuo no
+            desenvolvimento de sites e sistemas modernos, focados em
+            performance, usabilidade e soluções reais para negócios.
           </p>
 
           <div className="mt-8 flex max-w-xl flex-nowrap items-center justify-center gap-3 md:justify-start">
