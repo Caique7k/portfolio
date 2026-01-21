@@ -1,26 +1,27 @@
 export const projects = [
   {
-    title: "Sistema de Cadastro de Clientes",
+    title: "SyncDesk",
     description:
-      "Sistema web para cadastro, edição e consulta de clientes, com login e painel administrativo.",
-    techs: ["Next.js", "Tailwind", "Node.js"],
-    github: "https://github.com/seu-usuario/projeto1",
+      "Sistema desktop para agendamento, controle financeiro e organização de tarefas para profissionais autônomos.",
+    techs: ["C#", "Windows Forms", "PostgreSQL"],
+    github: "https://github.com/Caique7k/SyncDesk.git",
     demo: "#",
+  },
+  {
+    title: "Cardápio Rápido",
+    description:
+      "Plataforma web de cardápio digital para restaurantes, com foco em usabilidade e pedidos online.",
+    techs: ["React", "Tailwind", "PostgreSQL"],
+    github: "https://github.com/seu-usuario/projeto3",
+    link: "https://www.cardapiorapido.com.br/",
+    note: "Projeto profissional — código privado",
   },
   {
     title: "Painel de Chamadas",
     description:
       "Painel em tempo real para controle de chamadas em ambientes como clínicas e consultórios.",
-    techs: ["React", "WebSocket", "PostgreSQL"],
-    github: "https://github.com/seu-usuario/projeto2",
-    demo: "#",
-  },
-  {
-    title: "Site Institucional",
-    description:
-      "Site responsivo para apresentação de serviços e contato com clientes.",
-    techs: ["Next.js", "Tailwind"],
-    github: "https://github.com/seu-usuario/projeto3",
+    techs: ["NextJS", "WebSocket", "Python", "PostgreSQL"],
+    github: "https://github.com/Caique7k/painel-senhas.git",
     demo: "#",
   },
 ];
