@@ -40,7 +40,7 @@ hover:bg-white/5"
               Contato
             </a>
             <a
-              href="/CV-Caique.pdf"
+              href="/Currículo Caique da Silva Alves.pdf"
               download
               className="rounded-xl border border-white/20 px-5 py-3 transition hover:bg-white/5"
             >
