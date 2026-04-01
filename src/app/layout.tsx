@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio - Caique da Silva Alves",
-  description: "Portfolio de Caique da Silva Alves, desenvolvedor FullStack.",
+  title: "Caique da Silva Alves | Portfólio",
+  description:
+    "Portfólio de Caique da Silva Alves com projetos, interfaces, APIs, SQL, GitHub e sistemas construídos para uso real.",
 };
 
 export default function RootLayout({
@@ -23,10 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
     </html>

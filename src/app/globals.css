@@ -1,8 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #f5f2eb;
   --foreground: #171717;
+  --muted: #686256;
+  --panel: rgba(255, 255, 255, 0.76);
+  --panel-strong: #ece7de;
+  --accent: #1f2630;
+  --border: rgba(23, 23, 23, 0.08);
+  --shadow-soft: 0 20px 70px rgba(15, 23, 42, 0.06);
+}
+
+:root[data-theme="dark"] {
+  --background: #0d1014;
+  --foreground: #f5f1e8;
+  --muted: #ada79b;
+  --panel: rgba(18, 21, 27, 0.84);
+  --panel-strong: #141922;
+  --accent: #202935;
+  --border: rgba(255, 255, 255, 0.08);
+  --shadow-soft: 0 24px 90px rgba(0, 0, 0, 0.34);
 }
 
 @theme inline {
@@ -12,18 +29,43 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
+  margin: 0;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.45), transparent 28%),
+    var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), sans-serif;
+  text-rendering: optimizeLegibility;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
-html {
-  scroll-behavior: smooth;
+
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at top, rgba(92, 105, 124, 0.16), transparent 30%),
+    var(--background);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: rgba(120, 128, 144, 0.22);
 }

@@ -1,0 +1,28 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1200" fill="#EEE8DE"/>
+  <circle cx="1250" cy="250" r="240" fill="#D7D0C4"/>
+  <circle cx="310" cy="920" r="280" fill="#E3DDD2"/>
+  <rect x="132" y="118" width="1336" height="964" rx="44" fill="#FAF8F4" stroke="#D7D0C4" stroke-width="4"/>
+  <rect x="196" y="180" width="1208" height="104" rx="28" fill="#F2EEE6"/>
+  <rect x="236" y="220" width="128" height="24" rx="12" fill="#C6BEAF"/>
+  <rect x="1188" y="216" width="176" height="32" rx="16" fill="#E1DACC"/>
+  <rect x="196" y="332" width="728" height="408" rx="36" fill="#ECE6DB"/>
+  <rect x="972" y="332" width="432" height="196" rx="32" fill="#F3EFE7"/>
+  <rect x="972" y="560" width="432" height="180" rx="32" fill="#F3EFE7"/>
+  <rect x="196" y="780" width="1208" height="238" rx="36" fill="#F6F3EC"/>
+  <rect x="252" y="844" width="340" height="22" rx="11" fill="#B8AF9C"/>
+  <rect x="252" y="890" width="508" height="18" rx="9" fill="#D0C8B8"/>
+  <rect x="252" y="928" width="458" height="18" rx="9" fill="#DCD5C7"/>
+  <rect x="1024" y="834" width="324" height="126" rx="24" fill="#E8E1D4"/>
+  <path d="M330 536C330 459.784 391.784 398 468 398H652C728.216 398 790 459.784 790 536C790 612.216 728.216 674 652 674H468C391.784 674 330 612.216 330 536Z" fill="#161616"/>
+  <path d="M482 536C482 509.49 503.49 488 530 488H590C616.51 488 638 509.49 638 536C638 562.51 616.51 584 590 584H530C503.49 584 482 562.51 482 536Z" fill="#EEE8DE"/>
+  <rect x="1034" y="382" width="164" height="24" rx="12" fill="#ACA18E"/>
+  <rect x="1034" y="430" width="276" height="18" rx="9" fill="#D7D0C4"/>
+  <rect x="1034" y="478" width="202" height="18" rx="9" fill="#D7D0C4"/>
+  <rect x="1034" y="610" width="164" height="24" rx="12" fill="#ACA18E"/>
+  <rect x="1034" y="658" width="304" height="18" rx="9" fill="#D7D0C4"/>
+  <rect x="1034" y="706" width="230" height="18" rx="9" fill="#D7D0C4"/>
+  <text x="252" y="248" fill="#161616" font-family="Arial, sans-serif" font-size="42" font-weight="700">UniPass</text>
+  <text x="252" y="816" fill="#161616" font-family="Arial, sans-serif" font-size="64" font-weight="700">Acesso, identidade e operacao</text>
+  <text x="252" y="996" fill="#5C5447" font-family="Arial, sans-serif" font-size="34">Plataforma com linguagem premium, organizada e preparada para escalar.</text>
+</svg>

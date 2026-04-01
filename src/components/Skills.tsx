@@ -1,5 +1,6 @@
 "use client";
 
+import type { IconType } from "react-icons";
 import {
   SiReact,
   SiNextdotjs,
@@ -34,7 +35,12 @@ const skills = {
   ],
 };
 
-function SkillCard({ name, icon: Icon }: any) {
+type SkillCardProps = {
+  name: string;
+  icon: IconType;
+};
+
+function SkillCard({ name, icon: Icon }: SkillCardProps) {
   return (
     <div
       className="group flex flex-col items-center justify-center
