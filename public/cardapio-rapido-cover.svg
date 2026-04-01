@@ -1,0 +1,29 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" fill="#ECE7DE"/>
+  <circle cx="1310" cy="180" r="190" fill="#D9D2C7"/>
+  <circle cx="240" cy="860" r="220" fill="#E2DBCF"/>
+  <rect x="112" y="98" width="1376" height="804" rx="44" fill="#F8F5EF" stroke="#D8D0C3" stroke-width="4"/>
+  <rect x="176" y="160" width="1248" height="92" rx="26" fill="#EFEAE0"/>
+  <rect x="224" y="194" width="254" height="24" rx="12" fill="#B8AD9B"/>
+  <rect x="1184" y="188" width="172" height="36" rx="18" fill="#DDD5C8"/>
+  <rect x="176" y="302" width="384" height="506" rx="34" fill="#F3EEE6"/>
+  <rect x="602" y="302" width="822" height="242" rx="34" fill="#F3EEE6"/>
+  <rect x="602" y="566" width="822" height="242" rx="34" fill="#F3EEE6"/>
+  <rect x="228" y="354" width="280" height="180" rx="26" fill="#171717"/>
+  <rect x="258" y="386" width="220" height="18" rx="9" fill="#EFEAE0"/>
+  <rect x="258" y="424" width="184" height="14" rx="7" fill="#D3CABB"/>
+  <rect x="258" y="454" width="156" height="14" rx="7" fill="#D3CABB"/>
+  <rect x="228" y="574" width="280" height="180" rx="26" fill="#FBF9F5"/>
+  <rect x="258" y="610" width="180" height="18" rx="9" fill="#A79A87"/>
+  <rect x="258" y="646" width="220" height="14" rx="7" fill="#D3CABB"/>
+  <rect x="258" y="676" width="194" height="14" rx="7" fill="#D3CABB"/>
+  <rect x="654" y="356" width="208" height="20" rx="10" fill="#A79A87"/>
+  <rect x="654" y="400" width="636" height="16" rx="8" fill="#D3CABB"/>
+  <rect x="654" y="432" width="492" height="16" rx="8" fill="#D3CABB"/>
+  <rect x="654" y="620" width="208" height="20" rx="10" fill="#A79A87"/>
+  <rect x="654" y="664" width="636" height="16" rx="8" fill="#D3CABB"/>
+  <rect x="654" y="696" width="542" height="16" rx="8" fill="#D3CABB"/>
+  <text x="224" y="217" fill="#171717" font-family="Arial, sans-serif" font-size="38" font-weight="700">Cardápio Rápido</text>
+  <text x="224" y="858" fill="#171717" font-family="Arial, sans-serif" font-size="56" font-weight="700">CRUD multitenant para operação real</text>
+  <text x="224" y="910" fill="#615848" font-family="Arial, sans-serif" font-size="28">Produto em produção com gestão por tenant e rotina administrativa.</text>
+</svg>

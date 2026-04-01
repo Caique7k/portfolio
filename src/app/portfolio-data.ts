@@ -137,6 +137,34 @@ export const projects: Project[] = [
     ],
   },
   {
+    title: "Cardápio Rápido",
+    category: "Produto em produção",
+    media: {
+      type: "image",
+      src: "/cardapio.png",
+      alt: "Imagem do projeto Cardápio Rápido",
+    },
+    summary:
+      "Projeto desenvolvido quando trabalhei na Single, hoje em produção. A proposta combina operação simples para restaurantes com uma estrutura de CRUD multitenant bem organizada.",
+    metric: {
+      value: "CRUD",
+      label: "multitenant em produção",
+      note: "Gestão de cardápios com separação por tenant, fluxo administrativo e operação publicada no ambiente real.",
+    },
+    details: [
+      "Cadastro, edição, exclusão e organização de conteúdos por tenant.",
+      "Projeto profissional voltado para rotina operacional de restaurantes.",
+      "Estrutura pensada para manutenção contínua e crescimento do produto.",
+    ],
+    stack: ["React", "JavaScript", "Node.js", "PostgreSQL", "Multi-tenant"],
+    links: [
+      {
+        label: "Site",
+        href: "https://www.cardapiorapido.com.br/",
+      },
+    ],
+  },
+  {
     title: "SyncDesk",
     category: "Estudos em C#",
     media: {
