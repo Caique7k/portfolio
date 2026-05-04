@@ -1,32 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5f2eb;
-  --foreground: #171717;
-  --muted: #686256;
-  --panel: rgba(255, 255, 255, 0.76);
-  --panel-strong: #ece7de;
-  --accent: #1f2630;
-  --border: rgba(23, 23, 23, 0.08);
-  --shadow-soft: 0 20px 70px rgba(15, 23, 42, 0.06);
-}
-
-:root[data-theme="dark"] {
-  --background: #0d1014;
-  --foreground: #f5f1e8;
-  --muted: #ada79b;
-  --panel: rgba(18, 21, 27, 0.84);
-  --panel-strong: #141922;
-  --accent: #202935;
-  --border: rgba(255, 255, 255, 0.08);
-  --shadow-soft: 0 24px 90px rgba(0, 0, 0, 0.34);
+  color-scheme: dark;
+  --background: #050b11;
+  --foreground: #f2f7fb;
+  --muted: #94a5b5;
+  --panel: rgba(10, 17, 25, 0.82);
+  --panel-strong: #0d1721;
+  --accent: #7ee0b8;
+  --border: rgba(126, 224, 184, 0.14);
+  --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.28);
+  --grid-line: rgba(125, 145, 163, 0.08);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-space-grotesk);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 * {
@@ -39,21 +30,37 @@ html {
 
 body {
   margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
   background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.45), transparent 28%),
-    var(--background);
+    radial-gradient(circle at top, rgba(58, 117, 163, 0.24), transparent 30%),
+    radial-gradient(circle at 85% 12%, rgba(67, 153, 117, 0.18), transparent 24%),
+    linear-gradient(180deg, #09111a 0%, #050b11 100%);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), sans-serif;
+  font-family: var(--font-space-grotesk), sans-serif;
   text-rendering: optimizeLegibility;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
 }
 
-html[data-theme="dark"] body {
-  background:
-    radial-gradient(circle at top, rgba(92, 105, 124, 0.16), transparent 30%),
-    var(--background);
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at center, black 35%, transparent 100%);
+  opacity: 0.5;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: auto 0 0;
+  height: 28vh;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(5, 11, 17, 0.82));
 }
 
 a {
@@ -67,5 +74,5 @@ img {
 }
 
 ::selection {
-  background: rgba(120, 128, 144, 0.22);
+  background: rgba(126, 224, 184, 0.22);
 }

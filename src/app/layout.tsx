@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetBrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Caique da Silva Alves | Portfólio",
+  title: "Caique da Silva Alves | Desenvolvedor Backend",
   description:
-    "Portfólio de Caique da Silva Alves com projetos, interfaces, APIs, SQL, GitHub e sistemas construídos para uso real.",
+    "Portfólio de Caique da Silva Alves com foco em backend, APIs REST, NestJS, PostgreSQL, autenticação JWT/RBAC, WebSocket e sistemas orientados a operação real.",
 };
 
 export default function RootLayout({
@@ -24,8 +24,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="pt-BR">
+      <body
+        className={`${spaceGrotesk.variable} ${jetBrainsMono.variable} antialiased`}
+      >
         {children}
       </body>
     </html>
