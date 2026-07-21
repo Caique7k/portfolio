@@ -2,7 +2,11 @@ import type { IconType } from "react-icons";
 import {
   FaCodeBranch,
   FaDatabase,
-  FaHeadset,
+  FaFingerprint,
+  FaGaugeHigh,
+  FaKey,
+  FaLayerGroup,
+  FaNetworkWired,
   FaServer,
   FaShieldHalved,
   FaTerminal,
@@ -12,19 +16,23 @@ import {
   SiDocker,
   SiGit,
   SiJavascript,
+  SiLinux,
   SiNestjs,
   SiNodedotjs,
   SiPostgresql,
+  SiPython,
   SiSocketdotio,
   SiTypescript,
 } from "react-icons/si";
+
+export type PortfolioMode = "backend" | "security";
 
 export type StackItem = {
   name: string;
   icon: IconType;
 };
 
-export type QuickStat = {
+export type Metric = {
   value: string;
   label: string;
 };
@@ -37,79 +45,438 @@ export type Experience = {
   highlights: string[];
 };
 
-export type CapabilityGroup = {
+export type Capability = {
   title: string;
   icon: IconType;
   description: string;
   tags: string[];
 };
 
-export type SecurityPractice = {
-  title: string;
-  icon: IconType;
-  description: string;
-  checklist: string[];
-};
-
 export type Project = {
   title: string;
   category: string;
-  media: {
+  media?: {
     type: "image" | "video";
     src: string;
     alt: string;
   };
   summary: string;
-  outcome: {
-    value: string;
-    label: string;
-    note: string;
-  };
+  outcome: string;
   highlights: string[];
   stack: string[];
   links: { label: string; href: string }[];
 };
 
-export const quickStats: QuickStat[] = [
-  {
-    value: "2021 -> hoje",
-    label: "atuando com backend em sistemas usados no mundo real",
-  },
-  {
-    value: "JWT + RBAC",
-    label: "autenticação e controle de acesso aplicados em APIs",
-  },
-  {
-    value: "REST + WebSocket",
-    label: "integrações síncronas e fluxos em tempo real",
-  },
-];
+export type Track = {
+  mode: PortfolioMode;
+  label: string;
+  shortLabel: string;
+  eyebrow: string;
+  headline: string;
+  description: string;
+  githubHref: string;
+  githubLabel: string;
+  sourceLabel: string;
+  sourceHref: string;
+  metrics: Metric[];
+  stack: StackItem[];
+  terminalTitle: string;
+  terminalLines: string[];
+  capabilitiesEyebrow: string;
+  capabilitiesTitle: string;
+  capabilitiesDescription: string;
+  capabilities: Capability[];
+  projectsEyebrow: string;
+  projectsTitle: string;
+  projectsDescription: string;
+  projects: Project[];
+  contactTitle: string;
+  contactDescription: string;
+};
 
-export const coreStack: StackItem[] = [
-  { name: "Node.js", icon: SiNodedotjs },
-  { name: "NestJS", icon: SiNestjs },
-  { name: "PostgreSQL", icon: SiPostgresql },
-  { name: "TypeScript", icon: SiTypescript },
-  { name: "JavaScript", icon: SiJavascript },
-  { name: "WebSocket", icon: SiSocketdotio },
-  { name: "Git", icon: SiGit },
-  { name: "Docker", icon: SiDocker },
-];
-
-export const heroSnippet = [
-  "request -> validate(dto)",
-  "auth -> issueJWT()",
-  "guard -> enforceRBAC()",
-  "service -> applyBusinessRules()",
-  "db -> runParameterizedQuery()",
-  "logs -> trackOperationalEvents()",
-];
+export const tracks: Record<PortfolioMode, Track> = {
+  backend: {
+    mode: "backend",
+    label: "Backend",
+    shortLabel: "Dev",
+    eyebrow: "Desenvolvedor Backend",
+    headline:
+      "APIs, dados e integrações com base sólida para operar no mundo real.",
+    description:
+      "Atuo com Node.js, NestJS e PostgreSQL criando serviços organizados, autenticação, regras de negócio, integrações e fluxos em tempo real. Gosto de backend limpo, previsível e preparado para crescer sem perder segurança.",
+    githubHref: "https://github.com/Caique7k",
+    githubLabel: "GitHub backend",
+    sourceLabel: "github.com/Caique7k",
+    sourceHref: "https://github.com/Caique7k",
+    metrics: [
+      {
+        value: "2021 -> hoje",
+        label: "experiência com backend em sistemas usados em operação real",
+      },
+      {
+        value: "NestJS + SQL",
+        label: "APIs modulares, banco relacional e regras de domínio claras",
+      },
+      {
+        value: "JWT + RBAC",
+        label: "autenticação e autorização aplicadas como parte do desenho",
+      },
+    ],
+    stack: [
+      { name: "Node.js", icon: SiNodedotjs },
+      { name: "NestJS", icon: SiNestjs },
+      { name: "PostgreSQL", icon: SiPostgresql },
+      { name: "TypeScript", icon: SiTypescript },
+      { name: "JavaScript", icon: SiJavascript },
+      { name: "WebSocket", icon: SiSocketdotio },
+      { name: "Git", icon: SiGit },
+      { name: "Docker", icon: SiDocker },
+    ],
+    terminalTitle: "api-flow.ts",
+    terminalLines: [
+      "request -> validate(dto)",
+      "auth -> issueJWT()",
+      "guard -> enforceRBAC()",
+      "service -> applyBusinessRules()",
+      "db -> parameterizedQuery()",
+      "logs -> trackOperationalEvents()",
+    ],
+    capabilitiesEyebrow: "Stack e atuação",
+    capabilitiesTitle: "Backend pensado para clareza, manutenção e operação.",
+    capabilitiesDescription:
+      "A base técnica combina construção de APIs, modelagem relacional, segurança aplicada e leitura de produção. O objetivo é entregar serviços simples de evoluir e difíceis de quebrar sem perceber.",
+    capabilities: [
+      {
+        title: "APIs e arquitetura",
+        icon: FaServer,
+        description:
+          "Serviços organizados por módulo, com responsabilidades nítidas, regras de negócio claras e rotas fáceis de manter.",
+        tags: ["REST", "NestJS", "Módulos", "Integrações"],
+      },
+      {
+        title: "Autenticação e acesso",
+        icon: FaShieldHalved,
+        description:
+          "JWT, guards e RBAC para proteger recursos e manter permissões alinhadas ao papel real de cada usuário.",
+        tags: ["JWT", "RBAC", "Guards", "Menor privilégio"],
+      },
+      {
+        title: "Dados e SQL",
+        icon: FaDatabase,
+        description:
+          "Modelagem relacional, consultas parametrizadas, normalização e atenção a índices quando a performance importa.",
+        tags: ["PostgreSQL", "Joins", "Índices", "Consistência"],
+      },
+      {
+        title: "Tempo real",
+        icon: FaWaveSquare,
+        description:
+          "Fluxos com WebSocket e eventos quando o produto precisa reagir rápido e manter telas sincronizadas.",
+        tags: ["WebSocket", "Eventos", "Operação", "Sincronização"],
+      },
+      {
+        title: "Entrega incremental",
+        icon: FaCodeBranch,
+        description:
+          "Versionamento, leitura de impacto e evolução em etapas para reduzir risco durante manutenção e entrega.",
+        tags: ["Git", "Refactor", "Deploy", "Colaboração"],
+      },
+      {
+        title: "Operação e suporte",
+        icon: FaGaugeHigh,
+        description:
+          "Diagnóstico de falhas, análise de ambiente e suporte técnico ajudam a pensar software depois que ele sai do código.",
+        tags: ["Troubleshooting", "Logs", "Redes", "Continuidade"],
+      },
+    ],
+    projectsEyebrow: "Projetos",
+    projectsTitle: "Sistemas que mostram backend em prática.",
+    projectsDescription:
+      "Projetos selecionados por envolverem integração, dados relacionais, tempo real e organização de serviços em cenários com uso real.",
+    projects: [
+      {
+        title: "UniPass",
+        category: "Plataforma operacional",
+        media: {
+          type: "image",
+          src: "/dashboard-unipass.jpg",
+          alt: "Dashboard do projeto UniPass",
+        },
+        summary:
+          "Sistema com fluxo centralizado e base pensada para organizar regras de negócio, integrações e leitura operacional em um mesmo produto.",
+        outcome:
+          "NestJS + PostgreSQL em uma camada backend organizada para crescer sem perder clareza.",
+        highlights: [
+          "Estrutura de serviços orientada a módulos.",
+          "Modelagem relacional para evolução de regras de negócio.",
+          "Integração entre operação, dados e experiência de uso.",
+        ],
+        stack: ["React", "TypeScript", "Node.js", "NestJS", "PostgreSQL"],
+        links: [
+          {
+            label: "Repositório",
+            href: "https://github.com/Caique7k/unipass.git",
+          },
+        ],
+      },
+      {
+        title: "Painel de Chamadas Santa Casa",
+        category: "Tempo real em saúde",
+        media: {
+          type: "image",
+          src: "/painel-chamadas.png",
+          alt: "Painel de chamadas da Santa Casa de Misericórdia de Guaíra",
+        },
+        summary:
+          "Painel operacional para ambiente de saúde com atualização contínua e foco em leitura instantânea.",
+        outcome:
+          "WebSocket aplicado em cenário real, onde estabilidade e legibilidade afetam a rotina de atendimento.",
+        highlights: [
+          "Atualização ao vivo para consultórios e triagem.",
+          "Backend preparado para eventos contínuos.",
+          "Uso prático em operação com exigência de estabilidade.",
+        ],
+        stack: ["Python", "FastAPI", "WebSocket", "React", "PostgreSQL"],
+        links: [],
+      },
+      {
+        title: "Painel e-SUS com LaborWaze",
+        category: "Integração com sistema público",
+        media: {
+          type: "video",
+          src: "https://www.youtube.com/embed/C7DnWuI7jQk?start=4",
+          alt: "Vídeo do painel integrado ao e-SUS",
+        },
+        summary:
+          "Projeto conectado ao ecossistema e-SUS, com integração entre sistemas e tradução de requisitos operacionais em fluxos claros.",
+        outcome:
+          "Integração real entre domínio público, produto web e camada backend.",
+        highlights: [
+          "Integração com o sistema e-SUS.",
+          "Organização de fluxo para reduzir ruído operacional.",
+          "Transformação de requisito complexo em produto utilizável.",
+        ],
+        stack: ["Next.js", "NestJS", "JavaScript", "PostgreSQL", "e-SUS"],
+        links: [
+          {
+            label: "Repositório",
+            href: "https://github.com/Caique7k/painel-esus.git",
+          },
+          {
+            label: "Vídeo",
+            href: "https://www.youtube.com/watch?v=C7DnWuI7jQk&t=4s",
+          },
+        ],
+      },
+      {
+        title: "Cardápio Rápido",
+        category: "Produto em produção",
+        media: {
+          type: "image",
+          src: "/cardapio.png",
+          alt: "Imagem do projeto Cardápio Rápido",
+        },
+        summary:
+          "Produto com operação simples na superfície e organização multitenant por trás, pensado para cadastro, edição e publicação em ambiente real.",
+        outcome:
+          "CRUD multitenant com fluxo administrativo e separação por cliente.",
+        highlights: [
+          "Separação por tenant com foco em domínio.",
+          "Fluxo administrativo para manutenção contínua.",
+          "Produto publicado com uso real por clientes.",
+        ],
+        stack: ["React", "JavaScript", "Node.js", "PostgreSQL", "Multi-tenant"],
+        links: [
+          {
+            label: "Site",
+            href: "https://www.cardapiorapido.com.br/",
+          },
+        ],
+      },
+    ],
+    contactTitle: "Vamos conversar sobre backend que precisa funcionar bem.",
+    contactDescription:
+      "Estou disponível para APIs, integrações, manutenção de sistemas, dados relacionais e produtos que precisam de uma base técnica confiável.",
+  },
+  security: {
+    mode: "security",
+    label: "Cibersegurança",
+    shortLabel: "Sec",
+    eyebrow: "Cibersegurança e AppSec",
+    headline:
+      "Segurança ofensiva, pentest e AppSec com mentalidade de backend.",
+    description:
+      "Estou aprofundando estudos em cibersegurança para unir desenvolvimento e segurança: entender como sistemas quebram para construir APIs, fluxos e controles mais resistentes desde o início.",
+    githubHref: "https://github.com/caiquedotsec",
+    githubLabel: "GitHub segurança",
+    sourceLabel: "github.com/caiquedotsec",
+    sourceHref: "https://github.com/caiquedotsec",
+    metrics: [
+      {
+        value: "OffSec",
+        label: "foco atual em segurança ofensiva, pentest e AppSec",
+      },
+      {
+        value: "Linux + Redes",
+        label: "base prática para entender superfície, tráfego e ambiente",
+      },
+      {
+        value: "DevSecOps",
+        label: "explorando cloud security, blue team e segurança no ciclo de entrega",
+      },
+    ],
+    stack: [
+      { name: "Linux", icon: SiLinux },
+      { name: "Networking", icon: FaNetworkWired },
+      { name: "Python", icon: SiPython },
+      { name: "AppSec", icon: FaShieldHalved },
+      { name: "Pentest", icon: FaTerminal },
+      { name: "Cloud Security", icon: FaLayerGroup },
+      { name: "DevSecOps", icon: SiGit },
+      { name: "Secure Backend", icon: SiNestjs },
+    ],
+    terminalTitle: "whoami",
+    terminalLines: [
+      "alias -> caiquedotsec",
+      "focus -> offensive_security",
+      "specialty -> pentesting + appsec",
+      "learning -> linux + networking + python",
+      "exploring -> cloud_security + devsecops",
+      "goal -> build_secure_systems",
+    ],
+    capabilitiesEyebrow: "Trilha de segurança",
+    capabilitiesTitle: "Uma visão ofensiva aplicada ao ciclo de software.",
+    capabilitiesDescription:
+      "A área de segurança foi desenhada como um laboratório em evolução: fundamentos, prática controlada, AppSec e ponte direta com backend seguro.",
+    capabilities: [
+      {
+        title: "Pentest e reconhecimento",
+        icon: FaFingerprint,
+        description:
+          "Leitura de superfície, enumeração, entendimento de contexto e documentação clara antes de qualquer exploração.",
+        tags: ["Recon", "Enumeração", "Escopo", "Evidências"],
+      },
+      {
+        title: "AppSec para APIs",
+        icon: FaKey,
+        description:
+          "Validação de entrada, autenticação, autorização, exposição de dados e falhas comuns em aplicações web e APIs.",
+        tags: ["OWASP", "Auth", "RBAC", "APIs"],
+      },
+      {
+        title: "Linux e redes",
+        icon: FaNetworkWired,
+        description:
+          "Fundamentos de sistema operacional, serviços, portas, tráfego e diagnóstico para entender onde a aplicação vive.",
+        tags: ["Linux", "TCP/IP", "Serviços", "Troubleshooting"],
+      },
+      {
+        title: "Automação com Python",
+        icon: SiPython,
+        description:
+          "Scripts para organizar estudos, validar hipóteses e acelerar tarefas repetitivas em laboratórios controlados.",
+        tags: ["Python", "Scripts", "Parsing", "Labs"],
+      },
+      {
+        title: "DevSecOps",
+        icon: FaCodeBranch,
+        description:
+          "Exploração de segurança em pipeline, cloud e práticas que ajudam a encontrar problemas antes da produção.",
+        tags: ["Pipeline", "Cloud", "Secrets", "Hardening"],
+      },
+      {
+        title: "Blue Team como contexto",
+        icon: FaShieldHalved,
+        description:
+          "Noções de defesa, logs, detecção e resposta para escrever achados úteis e pensar mitigação com mais precisão.",
+        tags: ["Logs", "Detecção", "Mitigação", "Resposta"],
+      },
+    ],
+    projectsEyebrow: "Laboratório",
+    projectsTitle: "Estudos públicos e próximos passos em cibersegurança.",
+    projectsDescription:
+      "Como essa trilha está em construção, a seção mostra o que já está público e onde os estudos estão sendo concentrados agora.",
+    projects: [
+      {
+        title: "caiquedotsec",
+        category: "Perfil de segurança",
+        summary:
+          "Perfil dedicado a cibersegurança, com foco declarado em Offensive Security, Pentesting e Application Security.",
+        outcome:
+          "Base pública para concentrar estudos, anotações e futuros laboratórios de segurança.",
+        highlights: [
+          "Identidade técnica separada para segurança.",
+          "Foco em AppSec sem abandonar a experiência backend.",
+          "Mensagem central: entender sistemas para proteger informação.",
+        ],
+        stack: ["Offensive Security", "Pentesting", "AppSec", "Linux", "Python"],
+        links: [
+          {
+            label: "Perfil",
+            href: "https://github.com/caiquedotsec",
+          },
+        ],
+      },
+      {
+        title: "Backend seguro por design",
+        category: "AppSec aplicado",
+        summary:
+          "Estudo contínuo para levar mentalidade ofensiva para decisões de API: autenticação, autorização, validação e persistência.",
+        outcome:
+          "A experiência com NestJS e PostgreSQL vira vantagem para identificar e corrigir falhas comuns em aplicações.",
+        highlights: [
+          "Controle de acesso por contexto.",
+          "Entrada tratada como não confiável.",
+          "Queries e modelos pensados contra exposição indevida.",
+        ],
+        stack: ["OWASP", "JWT", "RBAC", "SQL", "Secure SDLC"],
+        links: [
+          {
+            label: "GitHub backend",
+            href: "https://github.com/Caique7k",
+          },
+        ],
+      },
+      {
+        title: "Trilha Cisco Cybersecurity",
+        category: "Fundamentos",
+        summary:
+          "Linha de aprendizado voltada a fundamentos de segurança, redes, Linux e conceitos que sustentam análise ofensiva e defensiva.",
+        outcome:
+          "Base técnica para evoluir em cloud security, DevSecOps e conceitos de Blue Team.",
+        highlights: [
+          "Fundamentos antes de ferramenta.",
+          "Redes e Linux como base de investigação.",
+          "Estudos conectados a cenários de aplicação web.",
+        ],
+        stack: ["Cisco", "Networking", "Linux", "Blue Team", "Cloud Security"],
+        links: [],
+      },
+    ],
+    contactTitle: "Vamos falar sobre segurança aplicada ao desenvolvimento.",
+    contactDescription:
+      "Procuro oportunidades e projetos onde backend, AppSec, pentest e segurança no ciclo de entrega possam caminhar juntos.",
+  },
+};
 
 export const experienceTimeline: Experience[] = [
   {
+    company: "Centro Estadual de Educação Tecnológica Paula Souza",
+    role: "Auxiliar de Docente",
+    period: "07/2026 - Atualmente",
+    summary:
+      "Atuação em apoio às atividades educacionais e práticas em ambiente de educação tecnológica, conectando suporte técnico, organização de laboratório e acompanhamento de alunos e docentes.",
+    highlights: [
+      "Apoio a docentes e alunos em atividades práticas ligadas à tecnologia.",
+      "Organização e suporte em ambiente de laboratório para manter as aulas fluindo com estabilidade.",
+      "Aplicação da experiência em suporte, redes e sistemas no contexto educacional.",
+      "Contato direto com formação técnica, documentação e rotina de aprendizagem aplicada.",
+    ],
+  },
+  {
     company: "COMPUTEC",
     role: "Técnico de Suporte / Desenvolvedor Backend",
-    period: "08/2022 - Atualmente",
+    period: "08/2022 - 06/2026",
     summary:
       "Atuação em manutenção e evolução de sistemas com foco em APIs REST, segurança aplicada ao backend, banco relacional e continuidade operacional.",
     highlights: [
@@ -134,240 +501,6 @@ export const experienceTimeline: Experience[] = [
   },
 ];
 
-export const capabilityGroups: CapabilityGroup[] = [
-  {
-    title: "APIs e arquitetura de serviços",
-    icon: FaServer,
-    description:
-      "Construção de APIs organizadas em módulos, com responsabilidades bem definidas, regras de negócio claras e foco em manutenção contínua.",
-    tags: ["REST", "NestJS", "Módulos", "Integrações"],
-  },
-  {
-    title: "Autenticação e autorização",
-    icon: FaShieldHalved,
-    description:
-      "Uso de JWT, RBAC e proteção de rotas para reduzir exposição indevida de recursos e manter o acesso compatível com o papel de cada usuário.",
-    tags: ["JWT", "RBAC", "Guards", "Controle de acesso"],
-  },
-  {
-    title: "Dados e SQL",
-    icon: FaDatabase,
-    description:
-      "Modelagem relacional, normalização, consultas otimizadas e leitura crítica de performance para APIs que dependem de consistência de dados.",
-    tags: ["PostgreSQL", "Joins", "Índices", "Otimização"],
-  },
-  {
-    title: "Tempo real e integrações",
-    icon: FaWaveSquare,
-    description:
-      "Desenvolvimento de fluxos com WebSocket e comunicação entre sistemas quando a operação precisa reagir rápido e manter sincronismo.",
-    tags: ["WebSocket", "Eventos", "Mensageria", "Sincronização"],
-  },
-  {
-    title: "Operação e suporte",
-    icon: FaHeadset,
-    description:
-      "Diagnóstico de falhas, análise de ambiente e suporte técnico como parte da responsabilidade por sistemas em produção.",
-    tags: ["Suporte", "Redes", "Hardware", "Continuidade"],
-  },
-  {
-    title: "Fluxo de entrega",
-    icon: FaCodeBranch,
-    description:
-      "Versionamento com Git, organização de mudanças e evolução incremental para reduzir risco e facilitar manutenção.",
-    tags: ["Git", "Branches", "Refactor", "Colaboração"],
-  },
-];
-
-export const securityPractices: SecurityPractice[] = [
-  {
-    title: "Validação na borda",
-    icon: FaTerminal,
-    description:
-      "Payloads são tratados como entrada não confiável. A validação antecipada ajuda a proteger regras de negócio e dados persistidos.",
-    checklist: [
-      "Campos obrigatórios e formatos consistentes",
-      "Tratamento explícito de erros de entrada",
-      "Respostas previsíveis para clientes e integrações",
-    ],
-  },
-  {
-    title: "Autorização por contexto",
-    icon: FaShieldHalved,
-    description:
-      "Autenticar não basta. O controle de acesso precisa respeitar perfis, permissões e limites de cada operação.",
-    checklist: [
-      "JWT com rotas protegidas",
-      "RBAC para separar responsabilidades",
-      "Princípio do menor privilégio possível",
-    ],
-  },
-  {
-    title: "Persistência segura",
-    icon: FaDatabase,
-    description:
-      "Modelagem relacional e consultas bem construídas reduzem inconsistências, retrabalho e pontos frágeis na camada de dados.",
-    checklist: [
-      "Queries parametrizadas",
-      "Modelagem orientada ao domínio",
-      "Otimização de SQL e leitura de gargalos",
-    ],
-  },
-  {
-    title: "Operação observável",
-    icon: FaServer,
-    description:
-      "Backend seguro também precisa ser rastreável. Logs úteis e diagnóstico rápido ajudam a responder melhor a incidentes e falhas.",
-    checklist: [
-      "Tratamento de exceções sem vazar detalhes sensíveis",
-      "Logs orientados a troubleshooting",
-      "Foco em estabilidade e continuidade do serviço",
-    ],
-  },
-];
-
-export const systemPrinciples = [
-  "Segurança entra na arquitetura desde a rota até a persistência, não apenas no deploy.",
-  "Validação de entrada, autenticação e autorização fazem parte do fluxo base de qualquer API séria.",
-  "Banco relacional bem modelado evita gambiarras futuras e melhora a previsibilidade da operação.",
-  "Suporte técnico e análise de falhas reforçam uma visão mais completa de backend em produção.",
-];
-
-export const projects: Project[] = [
-  {
-    title: "UniPass",
-    category: "Plataforma operacional",
-    media: {
-      type: "image",
-      src: "/dashboard-unipass.jpg",
-      alt: "Dashboard do projeto UniPass",
-    },
-    summary:
-      "Sistema com fluxo centralizado e base pensada para organizar regras de negócio, integrações e leitura operacional em um mesmo produto.",
-    outcome: {
-      value: "NestJS + PostgreSQL",
-      label: "camada backend organizada para crescer sem perder clareza",
-      note: "Projeto em que arquitetura, domínio e legibilidade caminham juntos para reduzir retrabalho.",
-    },
-    highlights: [
-      "Estrutura de serviços orientada a módulos e responsabilidades claras.",
-      "Modelagem relacional para suportar evolução de regras de negócio.",
-      "Integração entre operação, dados e experiência de uso em um fluxo coeso.",
-    ],
-    stack: ["React", "TypeScript", "Node.js", "NestJS", "PostgreSQL"],
-    links: [
-      {
-        label: "Repositório",
-        href: "https://github.com/Caique7k/unipass.git",
-      },
-    ],
-  },
-  {
-    title: "Painel de Chamadas Santa Casa",
-    category: "Tempo real em saúde",
-    media: {
-      type: "image",
-      src: "/painel-chamadas.png",
-      alt: "Painel de chamadas da Santa Casa de Misericórdia de Guaíra",
-    },
-    summary:
-      "Painel operacional para ambiente de saúde com atualização contínua e foco em leitura instantânea, reduzindo atrito em uma rotina crítica.",
-    outcome: {
-      value: "WebSocket em produção",
-      label: "fluxo em tempo real para atendimento e triagem",
-      note: "Projeto aplicado em cenário real, onde legibilidade e consistência impactam diretamente a operação.",
-    },
-    highlights: [
-      "Atualização ao vivo para consultórios e áreas de triagem.",
-      "Backend preparado para eventos e comunicação contínua.",
-      "Uso prático em operação real com exigência de estabilidade.",
-    ],
-    stack: ["Python", "FastAPI", "WebSocket", "React", "PostgreSQL"],
-    links: [],
-  },
-  {
-    title: "Painel e-SUS com LaborWaze",
-    category: "Integração com sistema público",
-    media: {
-      type: "video",
-      src: "https://www.youtube.com/embed/C7DnWuI7jQk?start=4",
-      alt: "Vídeo do painel integrado ao e-SUS",
-    },
-    summary:
-      "Projeto conectado ao ecossistema e-SUS, com integração entre sistemas e tradução de requisitos operacionais em fluxos claros de uso.",
-    outcome: {
-      value: "Integração real",
-      label: "dados e regras conectados a um contexto público",
-      note: "Entrega que reforça experiência com integrações, domínio operacional e valor prático do backend.",
-    },
-    highlights: [
-      "Integração com o sistema e-SUS em um caso com uso público.",
-      "Organização do fluxo para reduzir ruído na operação.",
-      "Capacidade de transformar requisito complexo em produto utilizável.",
-    ],
-    stack: ["Next.js", "NestJS", "JavaScript", "PostgreSQL", "e-SUS"],
-    links: [
-      {
-        label: "Repositório",
-        href: "https://github.com/Caique7k/painel-esus.git",
-      },
-      {
-        label: "Vídeo",
-        href: "https://www.youtube.com/watch?v=C7DnWuI7jQk&t=4s",
-      },
-    ],
-  },
-  {
-    title: "Cardápio Rápido",
-    category: "Produto em produção",
-    media: {
-      type: "image",
-      src: "/cardapio.png",
-      alt: "Imagem do projeto Cardápio Rápido",
-    },
-    summary:
-      "Produto com operação simples na superfície e organização multitenant por trás, pensado para suportar cadastro, edição e publicação em ambiente real.",
-    outcome: {
-      value: "CRUD multitenant",
-      label: "backend orientado a manutenção e crescimento do produto",
-      note: "Solução publicada em produção com fluxo administrativo e separação por tenant.",
-    },
-    highlights: [
-      "Separação por tenant com foco em organização do domínio.",
-      "Fluxo administrativo para cadastro e manutenção contínua.",
-      "Experiência profissional em produto com uso real por clientes.",
-    ],
-    stack: ["React", "JavaScript", "Node.js", "PostgreSQL", "Multi-tenant"],
-    links: [
-      {
-        label: "Site",
-        href: "https://www.cardapiorapido.com.br/",
-      },
-    ],
-  },
-];
-
-export const repoHighlights = [
-  {
-    name: "unipass",
-    description:
-      "Projeto com foco em domínio, organização de fluxo e base pronta para evoluir backend e produto juntos.",
-    href: "https://github.com/Caique7k/unipass.git",
-  },
-  {
-    name: "painel-esus",
-    description:
-      "Integração com contexto público e boa referência de comunicação entre sistema e operação real.",
-    href: "https://github.com/Caique7k/painel-esus.git",
-  },
-  {
-    name: "SyncDesk",
-    description:
-      "Estudo em C# para reforçar lógica, orientação a objetos e repertório além do ecossistema Node.js.",
-    href: "https://github.com/Caique7k/SyncDesk.git",
-  },
-];
-
 export const contactLinks = [
   {
     label: "WhatsApp",
@@ -382,10 +515,16 @@ export const contactLinks = [
     note: "bom canal para propostas mais detalhadas",
   },
   {
-    label: "GitHub",
+    label: "GitHub Backend",
     value: "github.com/Caique7k",
     href: "https://github.com/Caique7k",
-    note: "repositórios, histórico de estudo e projetos",
+    note: "projetos, estudos e histórico de desenvolvimento",
+  },
+  {
+    label: "GitHub Security",
+    value: "github.com/caiquedotsec",
+    href: "https://github.com/caiquedotsec",
+    note: "perfil dedicado a segurança ofensiva e AppSec",
   },
   {
     label: "LinkedIn",

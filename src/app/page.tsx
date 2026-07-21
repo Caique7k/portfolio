@@ -1,20 +1,49 @@
+"use client";
+
 import Image from "next/image";
-import { FaArrowRight, FaArrowUpRightFromSquare, FaTerminal } from "react-icons/fa6";
+import { type PointerEvent, useMemo, useState } from "react";
 import {
-  capabilityGroups,
+  FaArrowRight,
+  FaArrowUpRightFromSquare,
+  FaBriefcase,
+  FaDownload,
+  FaEnvelope,
+  FaGithub,
+  FaServer,
+  FaShieldHalved,
+  FaTerminal,
+} from "react-icons/fa6";
+import {
   contactLinks,
-  coreStack,
   experienceTimeline,
-  heroSnippet,
-  projects,
-  quickStats,
-  repoHighlights,
-  securityPractices,
-  systemPrinciples,
+  tracks,
+  type PortfolioMode,
   type Project,
 } from "./portfolio-data";
 
-function SectionHeading({
+const modeOptions: {
+  mode: PortfolioMode;
+  icon: typeof FaServer;
+  label: string;
+}[] = [
+  { mode: "backend", icon: FaServer, label: "Backend" },
+  { mode: "security", icon: FaShieldHalved, label: "Cibersegurança" },
+];
+
+function setPointerGlow(event: PointerEvent<HTMLElement>) {
+  const rect = event.currentTarget.getBoundingClientRect();
+
+  event.currentTarget.style.setProperty(
+    "--pointer-x",
+    `${event.clientX - rect.left}px`,
+  );
+  event.currentTarget.style.setProperty(
+    "--pointer-y",
+    `${event.clientY - rect.top}px`,
+  );
+}
+
+function SectionHeader({
   eyebrow,
   title,
   description,
@@ -25,10 +54,10 @@ function SectionHeading({
 }) {
   return (
     <div className="max-w-3xl">
-      <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--accent)]">
+      <p className="text-xs font-semibold uppercase text-[var(--accent)]">
         {eyebrow}
       </p>
-      <h2 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-[var(--foreground)] sm:text-4xl">
+      <h2 className="mt-3 text-3xl font-semibold text-[var(--foreground)] sm:text-4xl">
         {title}
       </h2>
       <p className="mt-4 text-sm leading-7 text-[var(--muted)] sm:text-base">
@@ -38,21 +67,128 @@ function SectionHeading({
   );
 }
 
-function ProjectMedia({
-  project,
-  featured = false,
+function ModeSwitch({
+  mode,
+  setMode,
+  compact = false,
 }: {
-  project: Project;
-  featured?: boolean;
+  mode: PortfolioMode;
+  setMode: (mode: PortfolioMode) => void;
+  compact?: boolean;
 }) {
-  const frameClass = featured
-    ? "aspect-[4/3] sm:aspect-[16/10] lg:min-h-[360px]"
-    : "aspect-[4/3] sm:aspect-[16/10]";
-
   return (
     <div
-      className={`overflow-hidden rounded-[1.8rem] border border-[var(--border)] bg-[var(--panel-strong)] ${frameClass}`}
+      className={`mode-switch inline-grid grid-cols-2 border border-[var(--line)] bg-[var(--control)] p-1 ${
+        compact ? "w-full sm:w-auto" : "w-full max-w-md"
+      } rounded-lg`}
     >
+      {modeOptions.map(({ mode: optionMode, icon: Icon, label }) => {
+        const active = optionMode === mode;
+
+        return (
+          <button
+            key={optionMode}
+            type="button"
+            aria-pressed={active}
+            onClick={() => setMode(optionMode)}
+            className={`mode-button flex min-h-11 items-center justify-center gap-2 rounded-md px-3 text-sm font-medium transition ${
+              active
+                ? "bg-[var(--active-bg)] text-[var(--active-text)] shadow-[var(--button-shadow)]"
+                : "text-[var(--muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--foreground)]"
+            }`}
+          >
+            <Icon className="text-sm" />
+            <span>{compact ? tracks[optionMode].shortLabel : label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function TerminalPanel({
+  title,
+  lines,
+}: {
+  title: string;
+  lines: string[];
+}) {
+  return (
+    <div
+      className="interactive-surface border border-[var(--terminal-line)] bg-[var(--terminal)] text-[var(--terminal-text)] rounded-lg"
+      onPointerMove={setPointerGlow}
+    >
+      <div className="flex items-center justify-between border-b border-[var(--terminal-line)] px-4 py-3">
+        <div className="flex items-center gap-2 text-xs font-medium uppercase">
+          <FaTerminal className="text-[var(--accent)]" />
+          {title}
+        </div>
+        <div className="flex gap-1.5" aria-hidden>
+          <span className="h-2 w-2 rounded-sm bg-[#ff6b6b]" />
+          <span className="h-2 w-2 rounded-sm bg-[#f4ce52]" />
+          <span className="h-2 w-2 rounded-sm bg-[#7dffb2]" />
+        </div>
+      </div>
+      <div className="grid gap-2 p-4 font-mono text-xs leading-6 sm:text-sm">
+        {lines.map((line, index) => (
+          <div
+            key={line}
+            className="terminal-row grid grid-cols-[2rem_1fr] gap-3 rounded-md px-2 py-1"
+          >
+            <span className="text-[var(--terminal-muted)]">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span>{line}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProfileCard({ mode }: { mode: PortfolioMode }) {
+  const label = mode === "backend" ? "backend" : "appsec";
+
+  return (
+    <article
+      className="interactive-surface profile-card border border-[var(--line)] bg-[var(--surface-elevated)] p-3 rounded-lg"
+      onPointerMove={setPointerGlow}
+    >
+      <div className="flex items-center justify-between border-b border-[var(--line)] px-2 pb-3">
+        <div>
+          <p className="text-xs font-semibold uppercase text-[var(--accent)]">
+            profile.card
+          </p>
+          <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">
+            Caique da Silva Alves
+          </p>
+        </div>
+        <span className="border border-[var(--line)] bg-[var(--surface-muted)] px-2.5 py-1 font-mono text-xs text-[var(--muted)] rounded-md">
+          {label}
+        </span>
+      </div>
+
+      <div className="mt-3 overflow-hidden border border-[var(--line)] bg-[var(--surface-muted)] rounded-md">
+        <Image
+          src="/foto-perfil.png"
+          alt="Foto de Caique da Silva Alves"
+          width={900}
+          height={1200}
+          priority
+          className="aspect-[4/5] w-full object-cover object-[center_top]"
+        />
+      </div>
+    </article>
+  );
+}
+
+function ProjectMedia({ project }: { project: Project }) {
+  if (!project.media) {
+    return null;
+  }
+
+  return (
+    <div className="project-media aspect-[16/10] overflow-hidden border-b border-[var(--line)] bg-[var(--surface-muted)]">
       {project.media.type === "video" ? (
         <iframe
           src={project.media.src}
@@ -64,284 +200,314 @@ function ProjectMedia({
           allowFullScreen
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center p-2 sm:p-4">
-          <Image
-            src={project.media.src}
-            alt={project.media.alt}
-            width={1600}
-            height={1000}
-            className="h-full w-full object-contain"
-          />
-        </div>
+        <Image
+          src={project.media.src}
+          alt={project.media.alt}
+          width={1400}
+          height={900}
+          className="h-full w-full object-cover"
+        />
       )}
     </div>
   );
 }
 
-export default function Home() {
-  const [featuredProject, ...secondaryProjects] = projects;
+function ProjectCard({ project, featured = false }: { project: Project; featured?: boolean }) {
+  const hasMedia = Boolean(project.media);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[var(--background)] text-[var(--foreground)]">
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,_rgba(77,176,136,0.22),_transparent_68%)] blur-3xl" />
-        <div className="absolute right-[-8rem] top-[18rem] h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,_rgba(55,101,150,0.18),_transparent_70%)] blur-3xl" />
-      </div>
+    <article
+      className={`interactive-surface group overflow-hidden border border-[var(--line)] bg-[var(--surface-elevated)] rounded-lg ${
+        featured && hasMedia ? "lg:grid lg:grid-cols-[1.08fr_0.92fr]" : ""
+      }`}
+      onPointerMove={setPointerGlow}
+    >
+      <ProjectMedia project={project} />
 
-      <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-4 sm:px-6 sm:pb-20 lg:px-8">
-        <header className="sticky top-4 z-30 rounded-[1.7rem] border border-[var(--border)] bg-[var(--panel)]/92 px-4 py-4 shadow-[var(--shadow-soft)] backdrop-blur">
-          <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--panel-strong)] font-mono text-sm text-[var(--accent)]">
-                CA
-              </div>
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.3em] text-[var(--muted)]">
-                  Backend Portfolio
-                </p>
-                <p className="text-sm font-medium text-[var(--foreground)]">
-                  Caique da Silva Alves
-                </p>
-              </div>
-            </div>
+      <div className="flex h-full flex-col p-5 sm:p-6">
+        <p className="text-xs font-semibold uppercase text-[var(--accent)]">
+          {project.category}
+        </p>
+        <h3 className="mt-3 text-2xl font-semibold text-[var(--foreground)]">
+          {project.title}
+        </h3>
+        <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
+          {project.summary}
+        </p>
 
-            <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1 text-sm text-[var(--muted)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden xl:flex-wrap xl:justify-end xl:overflow-visible xl:pb-0">
+        <p className="mt-5 border-l-2 border-[var(--accent)] pl-4 text-sm leading-7 text-[var(--foreground)]">
+          {project.outcome}
+        </p>
+
+        <ul className="mt-5 grid gap-2 text-sm leading-6 text-[var(--muted)]">
+          {project.highlights.map((item) => (
+            <li key={item} className="flex gap-2">
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-sm bg-[var(--accent)]" />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-6 flex flex-wrap gap-2">
+          {project.stack.map((item) => (
+            <span
+              key={item}
+              className="border border-[var(--line)] bg-[var(--surface-muted)] px-2.5 py-1.5 text-xs font-medium text-[var(--muted)] rounded-md"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+
+        {project.links.length > 0 && (
+          <div className="mt-6 flex flex-wrap gap-3">
+            {project.links.map((link) => (
               <a
-                href="#experiencia"
-                className="shrink-0 rounded-full px-3 py-2 transition hover:bg-[var(--panel-strong)] hover:text-[var(--foreground)]"
-              >
-                Experiência
-              </a>
-              <a
-                href="#stack"
-                className="shrink-0 rounded-full px-3 py-2 transition hover:bg-[var(--panel-strong)] hover:text-[var(--foreground)]"
-              >
-                Stack
-              </a>
-              <a
-                href="#seguranca"
-                className="shrink-0 rounded-full px-3 py-2 transition hover:bg-[var(--panel-strong)] hover:text-[var(--foreground)]"
-              >
-                Segurança
-              </a>
-              <a
-                href="#projetos"
-                className="shrink-0 rounded-full px-3 py-2 transition hover:bg-[var(--panel-strong)] hover:text-[var(--foreground)]"
-              >
-                Projetos
-              </a>
-              <a
-                href="#contato"
-                className="shrink-0 rounded-full px-3 py-2 transition hover:bg-[var(--panel-strong)] hover:text-[var(--foreground)]"
-              >
-                Contato
-              </a>
-              <a
-                href="https://github.com/Caique7k"
+                key={link.href}
+                href={link.href}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--panel-strong)] px-4 py-2 font-medium text-[var(--foreground)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                className="action-link inline-flex min-h-10 items-center gap-2 border border-[var(--line)] px-3 text-sm font-medium transition rounded-md"
               >
-                GitHub
+                {link.label}
                 <FaArrowUpRightFromSquare className="text-xs" />
               </a>
-            </div>
+            ))}
           </div>
-        </header>
+        )}
+      </div>
+    </article>
+  );
+}
 
-        <section
-          id="inicio"
-          className="grid gap-10 border-b border-[var(--border)] py-12 sm:py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-12"
+export default function Home() {
+  const [mode, setMode] = useState<PortfolioMode>("backend");
+  const track = tracks[mode];
+  const [featuredProject, ...secondaryProjects] = track.projects;
+
+  const activeNavigation = useMemo(
+    () => [
+      { label: "Experiência", href: "#experiencia" },
+      { label: track.mode === "backend" ? "Stack" : "Trilha", href: "#stack" },
+      { label: track.mode === "backend" ? "Projetos" : "Laboratório", href: "#projetos" },
+      { label: "Contato", href: "#contato" },
+    ],
+    [track.mode],
+  );
+
+  return (
+    <main
+      className={`portfolio-root theme-${mode} min-h-screen bg-[var(--surface)] text-[var(--foreground)] transition-colors duration-500`}
+    >
+      <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--surface)]/92 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+          <a href="#inicio" className="flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center border border-[var(--line)] bg-[var(--surface-elevated)] font-mono text-sm font-semibold text-[var(--accent)] rounded-lg">
+              CA
+            </span>
+            <span>
+              <span className="block text-sm font-semibold">
+                Caique da Silva Alves
+              </span>
+              <span className="block text-xs text-[var(--muted)]">
+                {track.eyebrow}
+              </span>
+            </span>
+          </a>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between lg:justify-end">
+            <nav className="flex gap-1 overflow-x-auto text-sm text-[var(--muted)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {activeNavigation.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="shrink-0 px-3 py-2 transition hover:text-[var(--foreground)] rounded-md"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+            <ModeSwitch mode={mode} setMode={setMode} compact />
+          </div>
+        </div>
+      </header>
+
+      <section id="inicio" className="relative overflow-hidden border-b border-[var(--line)]">
+        <div className="absolute inset-0 bg-[var(--hero-overlay)]" aria-hidden />
+
+        <div
+          key={mode}
+          className="mode-panel relative mx-auto grid min-h-[78svh] max-w-7xl gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:px-8"
         >
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[var(--accent)]">
-              Desenvolvedor Backend
+          <div className="max-w-3xl">
+            <p className="text-sm font-semibold uppercase text-[var(--accent)]">
+              {track.eyebrow}
             </p>
-            <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-[-0.07em] text-[var(--foreground)] sm:text-6xl lg:text-7xl">
-              APIs seguras, modelagem relacional e backend pensado para operar
-              bem no mundo real.
+            <h1 className="mt-5 text-4xl font-semibold text-[var(--foreground)] sm:text-6xl lg:text-7xl">
+              Caique da Silva Alves
             </h1>
-            <p className="mt-6 max-w-3xl text-[15px] leading-8 text-[var(--muted)] sm:text-lg">
-              Meu foco está em construir e manter serviços com Node.js, NestJS
-              e PostgreSQL, trabalhando autenticação, regras de negócio,
-              integrações e estabilidade operacional. Gosto de backend enxuto,
-              legível e preparado para crescer sem perder segurança.
+            <p className="mt-6 max-w-3xl text-xl font-medium leading-8 text-[var(--foreground)] sm:text-2xl sm:leading-10">
+              {track.headline}
+            </p>
+            <p className="mt-5 max-w-2xl text-sm leading-7 text-[var(--muted)] sm:text-base">
+              {track.description}
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div className="mt-8">
+              <ModeSwitch mode={mode} setMode={setMode} />
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href="#projetos"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--accent)] bg-[var(--accent)] px-6 py-3 text-sm font-medium text-[#041016] transition hover:brightness-105"
+                className="action-primary inline-flex min-h-11 items-center gap-2 px-4 text-sm font-semibold transition rounded-md"
               >
-                Ver projetos
+                Ver agora
                 <FaArrowRight className="text-xs" />
+              </a>
+              <a
+                href={track.githubHref}
+                target="_blank"
+                rel="noreferrer"
+                className="action-secondary inline-flex min-h-11 items-center gap-2 border border-[var(--line)] bg-[var(--surface-elevated)] px-4 text-sm font-semibold transition rounded-md"
+              >
+                <FaGithub />
+                {track.githubLabel}
               </a>
               <a
                 href="/Curr%C3%ADculo%20Caique%20da%20Silva%20Alves.pdf"
                 download
-                className="rounded-full border border-[var(--border)] px-6 py-3 text-center text-sm font-medium text-[var(--foreground)] transition hover:bg-[var(--panel)]"
+                className="action-secondary inline-flex min-h-11 items-center gap-2 border border-[var(--line)] px-4 text-sm font-semibold transition rounded-md"
               >
-                Baixar CV
-              </a>
-              <a
-                href="#contato"
-                className="rounded-full border border-[var(--border)] px-6 py-3 text-center text-sm font-medium text-[var(--foreground)] transition hover:bg-[var(--panel)]"
-              >
-                Falar comigo
+                <FaDownload />
+                CV
               </a>
             </div>
 
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              {quickStats.map((item) => (
-                <article
-                  key={item.value}
-                  className="rounded-[1.6rem] border border-[var(--border)] bg-[var(--panel)] p-4 shadow-[var(--shadow-soft)]"
+            <div className="mt-10 grid gap-3 sm:grid-cols-3">
+              {track.metrics.map((metric) => (
+                <div
+                  key={metric.value}
+                  className="interactive-surface border border-[var(--line)] bg-[var(--surface-elevated)]/88 p-4 backdrop-blur rounded-lg"
+                  onPointerMove={setPointerGlow}
                 >
-                  <p className="font-mono text-sm uppercase tracking-[0.16em] text-[var(--accent)]">
-                    {item.value}
+                  <p className="font-mono text-sm font-semibold text-[var(--accent)]">
+                    {metric.value}
                   </p>
-                  <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                    {item.label}
+                  <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                    {metric.label}
                   </p>
-                </article>
-              ))}
-            </div>
-
-            <div className="mt-8 flex flex-wrap gap-2">
-              {coreStack.map(({ name, icon: Icon }) => (
-                <span
-                  key={name}
-                  className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--panel)] px-4 py-2 text-sm text-[var(--foreground)]"
-                >
-                  <Icon className="text-[13px] text-[var(--accent)]" />
-                  {name}
-                </span>
+                </div>
               ))}
             </div>
           </div>
 
-          <div className="grid gap-4 lg:pl-8">
-            <article className="overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[var(--panel)] shadow-[var(--shadow-soft)]">
-              <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.3em] text-[var(--muted)]">
-                    profile.card
-                  </p>
-                  <p className="mt-1 text-sm font-medium">Caique da Silva Alves</p>
-                </div>
-                <span className="rounded-full border border-[var(--border)] bg-[var(--panel-strong)] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">
-                  backend
-                </span>
-              </div>
-              <div className="p-4">
-                <div className="overflow-hidden rounded-[1.6rem] border border-[var(--border)] bg-[var(--panel-strong)]">
-                  <Image
-                    src="/foto-perfil.png"
-                    alt="Foto de Caique da Silva Alves"
-                    width={1200}
-                    height={1400}
-                    priority
-                    className="aspect-[4/4.7] w-full object-cover object-center"
-                  />
-                </div>
-              </div>
-            </article>
-
-            <article className="rounded-[2rem] border border-[var(--border)] bg-[var(--panel)] p-5 shadow-[var(--shadow-soft)]">
-              <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.28em] text-[var(--accent)]">
-                <FaTerminal className="text-sm" />
-                secure-backend.ts
-              </div>
-              <div className="mt-4 rounded-[1.4rem] border border-[var(--border)] bg-[var(--panel-strong)] p-4 font-mono text-sm leading-7 text-[var(--foreground)]">
-                {heroSnippet.map((line, index) => (
-                  <div key={line} className="flex gap-3">
-                    <span className="text-[var(--muted)]">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span>{line}</span>
-                  </div>
-                ))}
-              </div>
-            </article>
+          <div className="mx-auto w-full max-w-sm lg:ml-auto">
+            <ProfileCard mode={mode} />
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section
-          id="experiencia"
-          className="border-b border-[var(--border)] py-12 sm:py-16"
-        >
-          <SectionHeading
+      <section id="experiencia" className="border-b border-[var(--line)]">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
+          <SectionHeader
             eyebrow="Experiência"
-            title="Backend construído com contexto real de operação."
-            description="Minha trajetória combina desenvolvimento de APIs, modelagem de dados, autenticação e suporte técnico. Isso me ajuda a pensar backend não só como código, mas como serviço que precisa continuar funcionando bem depois da entrega."
+            title="Uma base backend que ajuda a pensar segurança com contexto."
+            description="A trajetória profissional combina desenvolvimento, suporte técnico, dados e operação. Essa mistura é útil tanto para construir serviços quanto para investigar onde eles podem falhar."
           />
 
-          <div className="mt-10 grid gap-5 lg:grid-cols-2">
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
             {experienceTimeline.map((job) => (
               <article
                 key={`${job.company}-${job.period}`}
-                className="rounded-[2rem] border border-[var(--border)] bg-[var(--panel)] p-6 shadow-[var(--shadow-soft)]"
+                className="interactive-surface border border-[var(--line)] bg-[var(--surface-elevated)] p-5 rounded-lg"
+                onPointerMove={setPointerGlow}
               >
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.28em] text-[var(--accent)]">
+                    <p className="text-xs font-semibold uppercase text-[var(--accent)]">
                       {job.company}
                     </p>
-                    <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--foreground)]">
+                    <h3 className="mt-2 text-xl font-semibold text-[var(--foreground)]">
                       {job.role}
                     </h3>
                   </div>
-                  <span className="rounded-full border border-[var(--border)] bg-[var(--panel-strong)] px-4 py-2 font-mono text-xs uppercase tracking-[0.18em] text-[var(--muted)]">
+                  <span className="font-mono text-xs text-[var(--muted)]">
                     {job.period}
                   </span>
                 </div>
 
-                <p className="mt-5 text-sm leading-7 text-[var(--muted)]">
+                <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
                   {job.summary}
                 </p>
 
-                <div className="mt-6 grid gap-3">
+                <ul className="mt-5 grid gap-2 text-sm leading-6 text-[var(--muted)]">
                   {job.highlights.map((item) => (
-                    <div
-                      key={item}
-                      className="rounded-[1.4rem] border border-[var(--border)] bg-[var(--panel-strong)] px-4 py-4 text-sm leading-6 text-[var(--muted)]"
-                    >
-                      {item}
-                    </div>
+                    <li key={item} className="flex gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-sm bg-[var(--accent)]" />
+                      <span>{item}</span>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </article>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="stack" className="border-b border-[var(--border)] py-12 sm:py-16">
-          <SectionHeading
-            eyebrow="Stack"
-            title="Base técnica orientada a APIs, dados e manutenção."
-            description="Prefiro soluções limpas e previsíveis, com responsabilidade bem separada entre rotas, serviços, autenticação e persistência. O objetivo é facilitar evolução sem transformar o backend em um ponto frágil do sistema."
+      <section id="stack" className="border-b border-[var(--line)]">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
+          <SectionHeader
+            eyebrow={track.capabilitiesEyebrow}
+            title={track.capabilitiesTitle}
+            description={track.capabilitiesDescription}
           />
 
-          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {capabilityGroups.map(({ title, icon: Icon, description, tags }) => (
+          <div className="mt-8 grid gap-5 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch">
+            <div
+              className="interactive-surface border border-[var(--line)] bg-[var(--surface-elevated)] p-5 rounded-lg"
+              onPointerMove={setPointerGlow}
+            >
+              <p className="text-xs font-semibold uppercase text-[var(--accent)]">
+                Ferramentas e base técnica
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {track.stack.map(({ name, icon: Icon }) => (
+                  <span
+                    key={name}
+                    className="stack-chip inline-flex items-center gap-2 border border-[var(--line)] bg-[var(--surface-elevated)] px-3 py-2 text-sm text-[var(--foreground)] rounded-md"
+                  >
+                    <Icon className="text-sm text-[var(--accent)]" />
+                    {name}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <TerminalPanel title={track.terminalTitle} lines={track.terminalLines} />
+          </div>
+
+          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {track.capabilities.map(({ title, icon: Icon, description, tags }) => (
               <article
                 key={title}
-                className="rounded-[1.9rem] border border-[var(--border)] bg-[var(--panel)] p-5 shadow-[var(--shadow-soft)]"
+                className="interactive-surface group border border-[var(--line)] bg-[var(--surface-elevated)] p-5 rounded-lg"
+                onPointerMove={setPointerGlow}
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--panel-strong)] text-[20px] text-[var(--accent)]">
+                <div className="grid h-11 w-11 place-items-center border border-[var(--line)] bg-[var(--surface-muted)] text-lg text-[var(--accent)] transition group-hover:-translate-y-0.5 rounded-md">
                   <Icon />
                 </div>
-                <h3 className="mt-5 text-2xl font-semibold tracking-[-0.04em] text-[var(--foreground)]">
+                <h3 className="mt-4 text-xl font-semibold text-[var(--foreground)]">
                   {title}
                 </h3>
-                <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
+                <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
                   {description}
                 </p>
-                <div className="mt-5 flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-wrap gap-2">
                   {tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full border border-[var(--border)] bg-[var(--panel-strong)] px-3 py-2 text-[11px] font-medium uppercase tracking-[0.16em] text-[var(--muted)]"
+                      className="border border-[var(--line)] bg-[var(--surface-muted)] px-2.5 py-1.5 text-xs text-[var(--muted)] rounded-md"
                     >
                       {tag}
                     </span>
@@ -350,305 +516,105 @@ export default function Home() {
               </article>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section
-          id="seguranca"
-          className="border-b border-[var(--border)] py-12 sm:py-16"
-        >
-          <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
-            <div className="rounded-[2rem] border border-[var(--border)] bg-[linear-gradient(180deg,_rgba(126,224,184,0.14),_rgba(12,21,30,0.95))] p-6 shadow-[var(--shadow-soft)] sm:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--accent)]">
-                Segurança
-              </p>
-              <h2 className="mt-4 max-w-xl text-3xl font-semibold tracking-[-0.06em] text-[var(--foreground)] sm:text-4xl">
-                Desenvolvimento backend seguro começa em decisões simples, bem
-                repetidas.
-              </h2>
-              <p className="mt-5 max-w-xl text-sm leading-7 text-[var(--muted)]">
-                O tipo de backend que eu gosto de construir combina validação,
-                controle de acesso, modelagem consistente e atenção ao
-                comportamento em produção. Segurança, para mim, é prática
-                diária de implementação.
-              </p>
-
-              <div className="mt-8 grid gap-3">
-                {systemPrinciples.map((principle) => (
-                  <div
-                    key={principle}
-                    className="rounded-[1.5rem] border border-[var(--border)] bg-[rgba(7,16,24,0.48)] px-4 py-4 text-sm leading-6 text-[var(--foreground)]/88"
-                  >
-                    {principle}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid gap-5 md:grid-cols-2">
-              {securityPractices.map(
-                ({ title, icon: Icon, description, checklist }) => (
-                  <article
-                    key={title}
-                    className="rounded-[1.9rem] border border-[var(--border)] bg-[var(--panel)] p-5 shadow-[var(--shadow-soft)]"
-                  >
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--panel-strong)] text-[20px] text-[var(--accent)]">
-                      <Icon />
-                    </div>
-                    <h3 className="mt-5 text-2xl font-semibold tracking-[-0.04em] text-[var(--foreground)]">
-                      {title}
-                    </h3>
-                    <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
-                      {description}
-                    </p>
-                    <div className="mt-5 grid gap-3">
-                      {checklist.map((item) => (
-                        <div
-                          key={item}
-                          className="rounded-[1.3rem] border border-[var(--border)] bg-[var(--panel-strong)] px-4 py-3 text-sm leading-6 text-[var(--muted)]"
-                        >
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                  </article>
-                ),
-              )}
-            </div>
+      <section id="projetos" className="border-b border-[var(--line)]">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <SectionHeader
+              eyebrow={track.projectsEyebrow}
+              title={track.projectsTitle}
+              description={track.projectsDescription}
+            />
+            <a
+              href={track.sourceHref}
+              target="_blank"
+              rel="noreferrer"
+              className="action-secondary inline-flex min-h-11 w-fit items-center gap-2 border border-[var(--line)] bg-[var(--surface-elevated)] px-4 text-sm font-semibold transition rounded-md"
+            >
+              <FaGithub />
+              {track.sourceLabel}
+            </a>
           </div>
-        </section>
 
-        <section id="projetos" className="border-b border-[var(--border)] py-12 sm:py-16">
-          <SectionHeading
-            eyebrow="Projetos"
-            title="Sistemas que mostram backend em prática."
-            description="Selecionei trabalhos que representam bem meu foco atual: integração, dados relacionais, tempo real e organização de serviços para cenários com uso real."
-          />
+          <div className="mt-10">
+            <ProjectCard project={featuredProject} featured />
+          </div>
 
-          <article className="mt-10 grid gap-6 rounded-[2.2rem] border border-[var(--border)] bg-[var(--panel)] p-4 shadow-[var(--shadow-soft)] lg:grid-cols-[1.05fr_0.95fr] lg:p-6">
-            <ProjectMedia project={featuredProject} featured />
-
-            <div className="flex flex-col justify-between rounded-[1.7rem] border border-[var(--border)] bg-[var(--panel-strong)] p-5 sm:p-6">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-[var(--accent)]">
-                  {featuredProject.category}
-                </p>
-                <h3 className="mt-4 text-3xl font-semibold tracking-[-0.06em] text-[var(--foreground)] sm:text-4xl">
-                  {featuredProject.title}
-                </h3>
-                <p className="mt-5 text-sm leading-7 text-[var(--muted)] sm:text-base">
-                  {featuredProject.summary}
-                </p>
-
-                <div className="mt-6 rounded-[1.5rem] border border-[var(--border)] bg-[var(--panel)] p-5">
-                  <p className="font-mono text-lg uppercase tracking-[0.18em] text-[var(--accent)]">
-                    {featuredProject.outcome.value}
-                  </p>
-                  <p className="mt-3 text-sm font-medium text-[var(--foreground)]">
-                    {featuredProject.outcome.label}
-                  </p>
-                  <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                    {featuredProject.outcome.note}
-                  </p>
-                </div>
-
-                <div className="mt-6 grid gap-3">
-                  {featuredProject.highlights.map((item) => (
-                    <div
-                      key={item}
-                      className="rounded-[1.3rem] border border-[var(--border)] bg-[var(--panel)] px-4 py-3 text-sm leading-6 text-[var(--muted)]"
-                    >
-                      {item}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <div className="flex flex-wrap gap-2">
-                  {featuredProject.stack.map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-full border border-[var(--border)] bg-[rgba(7,16,24,0.62)] px-4 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--foreground)]"
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </div>
-
-                {featuredProject.links.length > 0 && (
-                  <div className="mt-5 flex flex-wrap gap-3">
-                    {featuredProject.links.map((link) => (
-                      <a
-                        key={link.href}
-                        href={link.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--panel)] px-4 py-3 text-sm font-medium transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
-                      >
-                        {link.label}
-                        <FaArrowUpRightFromSquare className="text-xs" />
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </article>
-
-          <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {secondaryProjects.map((project) => (
-              <article
-                key={project.title}
-                className="overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[var(--panel)] shadow-[var(--shadow-soft)]"
-              >
-                <div className="border-b border-[var(--border)] bg-[var(--panel-strong)] p-3">
-                  <ProjectMedia project={project} />
-                </div>
-
-                <div className="space-y-5 p-5">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.26em] text-[var(--accent)]">
-                      {project.category}
-                    </p>
-                    <h3 className="mt-3 text-2xl font-semibold tracking-[-0.05em] text-[var(--foreground)]">
-                      {project.title}
-                    </h3>
-                    <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
-                      {project.summary}
-                    </p>
-                  </div>
-
-                  <div className="rounded-[1.4rem] border border-[var(--border)] bg-[var(--panel-strong)] p-4">
-                    <p className="font-mono text-sm uppercase tracking-[0.18em] text-[var(--accent)]">
-                      {project.outcome.value}
-                    </p>
-                    <p className="mt-3 text-sm font-medium text-[var(--foreground)]">
-                      {project.outcome.label}
-                    </p>
-                    <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                      {project.outcome.note}
-                    </p>
-                  </div>
-
-                  <div className="grid gap-3">
-                    {project.highlights.slice(0, 2).map((item) => (
-                      <div
-                        key={item}
-                        className="rounded-[1.2rem] border border-[var(--border)] bg-[var(--panel-strong)] px-4 py-3 text-sm leading-6 text-[var(--muted)]"
-                      >
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {project.stack.map((item) => (
-                      <span
-                        key={item}
-                        className="rounded-full border border-[var(--border)] bg-[var(--panel-strong)] px-3 py-2 text-[11px] font-medium uppercase tracking-[0.16em] text-[var(--muted)]"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-
-                  {project.links.length > 0 && (
-                    <div className="flex flex-wrap gap-3">
-                      {project.links.map((link) => (
-                        <a
-                          key={link.href}
-                          href={link.href}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-4 py-3 text-sm font-medium transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
-                        >
-                          {link.label}
-                          <FaArrowUpRightFromSquare className="text-xs" />
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </article>
+              <ProjectCard key={project.title} project={project} />
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="github" className="border-b border-[var(--border)] py-12 sm:py-16">
+      <section id="contato">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-            <SectionHeading
-              eyebrow="GitHub"
-              title="Repositórios que reforçam minha base técnica."
-              description="Além dos projetos em produção, mantenho estudos e repositórios que ajudam a mostrar meu repertório em backend, integração e organização de código."
-            />
-
-            <div className="grid gap-4">
-              {repoHighlights.map((repo) => (
-                <a
-                  key={repo.href}
-                  href={repo.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--panel)] p-5 shadow-[var(--shadow-soft)] transition hover:border-[var(--accent)] hover:bg-[var(--panel-strong)]"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="font-mono text-sm uppercase tracking-[0.18em] text-[var(--accent)]">
-                        {repo.name}
-                      </p>
-                      <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-                        {repo.description}
-                      </p>
-                    </div>
-                    <FaArrowUpRightFromSquare className="mt-1 shrink-0 text-sm text-[var(--foreground)]" />
-                  </div>
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="contato" className="py-12 sm:py-16">
-          <div className="rounded-[2.2rem] border border-[var(--border)] bg-[var(--panel)] p-6 shadow-[var(--shadow-soft)] sm:p-8">
-            <div className="max-w-3xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--accent)]">
+            <div>
+              <p className="text-xs font-semibold uppercase text-[var(--accent)]">
                 Contato
               </p>
-              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.06em] text-[var(--foreground)] sm:text-5xl">
-                Se o projeto precisa de backend sólido, segurança aplicada e
-                cuidado com operação, vamos conversar.
+              <h2 className="mt-3 text-3xl font-semibold text-[var(--foreground)] sm:text-4xl">
+                {track.contactTitle}
               </h2>
-              <p className="mt-5 text-sm leading-7 text-[var(--muted)] sm:text-base">
-                Estou disponível para falar sobre desenvolvimento de APIs,
-                manutenção de sistemas, integrações, tempo real e evolução de
-                produtos que precisam funcionar com consistência.
+              <p className="mt-4 text-sm leading-7 text-[var(--muted)] sm:text-base">
+                {track.contactDescription}
               </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a
+                  href="mailto:caique7k@gmail.com"
+                  className="action-primary inline-flex min-h-11 items-center gap-2 px-4 text-sm font-semibold transition rounded-md"
+                >
+                  <FaEnvelope />
+                  Email
+                </a>
+                <a
+                  href={track.githubHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="action-secondary inline-flex min-h-11 items-center gap-2 border border-[var(--line)] px-4 text-sm font-semibold transition rounded-md"
+                >
+                  <FaGithub />
+                  GitHub
+                </a>
+              </div>
             </div>
 
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               {contactLinks.map((item) => (
                 <a
-                  key={item.label}
+                  key={item.href}
                   href={item.href}
                   target={item.href.startsWith("http") ? "_blank" : undefined}
                   rel={item.href.startsWith("http") ? "noreferrer" : undefined}
-                  className="rounded-[1.7rem] border border-[var(--border)] bg-[var(--panel-strong)] p-5 transition hover:border-[var(--accent)] hover:-translate-y-0.5"
+                  className="interactive-surface border border-[var(--line)] bg-[var(--surface-elevated)] p-5 transition rounded-lg"
+                  onPointerMove={setPointerGlow}
                 >
-                  <p className="text-xs uppercase tracking-[0.24em] text-[var(--accent)]">
-                    {item.label}
-                  </p>
-                  <p className="mt-3 text-base font-medium leading-7 text-[var(--foreground)]">
-                    {item.value}
-                  </p>
-                  <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                    {item.note}
-                  </p>
+                  <div className="flex items-start gap-3">
+                    <span className="mt-1 grid h-9 w-9 shrink-0 place-items-center border border-[var(--line)] bg-[var(--surface-muted)] text-[var(--accent)] rounded-md">
+                      <FaBriefcase className="text-sm" />
+                    </span>
+                    <span>
+                      <span className="block text-xs font-semibold uppercase text-[var(--accent)]">
+                        {item.label}
+                      </span>
+                      <span className="mt-2 block break-words text-sm font-semibold text-[var(--foreground)]">
+                        {item.value}
+                      </span>
+                      <span className="mt-2 block text-sm leading-6 text-[var(--muted)]">
+                        {item.note}
+                      </span>
+                    </span>
+                  </div>
                 </a>
               ))}
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </main>
   );
 }

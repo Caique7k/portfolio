@@ -1,20 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: dark;
-  --background: #050b11;
-  --foreground: #f2f7fb;
-  --muted: #94a5b5;
-  --panel: rgba(10, 17, 25, 0.82);
-  --panel-strong: #0d1721;
-  --accent: #7ee0b8;
-  --border: rgba(126, 224, 184, 0.14);
-  --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.28);
-  --grid-line: rgba(125, 145, 163, 0.08);
+  color-scheme: light dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
+  --color-background: var(--surface);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-space-grotesk);
   --font-mono: var(--font-jetbrains-mono);
@@ -32,40 +23,24 @@ body {
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at top, rgba(58, 117, 163, 0.24), transparent 30%),
-    radial-gradient(circle at 85% 12%, rgba(67, 153, 117, 0.18), transparent 24%),
-    linear-gradient(180deg, #09111a 0%, #050b11 100%);
-  color: var(--foreground);
-  font-family: var(--font-space-grotesk), sans-serif;
+  background: #f2f7f5;
+  color: #161718;
+  font-family: var(--font-space-grotesk), Arial, sans-serif;
   text-rendering: optimizeLegibility;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(circle at center, black 35%, transparent 100%);
-  opacity: 0.5;
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  inset: auto 0 0;
-  height: 28vh;
-  pointer-events: none;
-  background: linear-gradient(180deg, transparent, rgba(5, 11, 17, 0.82));
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
 }
 
 img {
@@ -74,5 +49,279 @@ img {
 }
 
 ::selection {
-  background: rgba(126, 224, 184, 0.22);
+  background: rgba(31, 111, 91, 0.2);
+}
+
+.portfolio-root {
+  --surface: #f2f7f5;
+  --surface-elevated: #ffffff;
+  --surface-muted: #e4ece9;
+  --foreground: #151a18;
+  --muted: #5f6d68;
+  --accent: #197a68;
+  --line: rgba(23, 25, 27, 0.14);
+  --control: rgba(255, 255, 255, 0.78);
+  --active-bg: #197a68;
+  --active-text: #f8fffc;
+  --action-bg: #197a68;
+  --action-text: #f8fffc;
+  --button-shadow: 0 12px 34px rgba(25, 122, 104, 0.24);
+  --hover-glow: rgba(25, 122, 104, 0.13);
+  --terminal: #0c1311;
+  --terminal-text: #e8fff4;
+  --terminal-muted: #7f958c;
+  --terminal-line: rgba(232, 255, 244, 0.14);
+  --hero-overlay: linear-gradient(
+    90deg,
+    rgba(242, 247, 245, 0.98) 0%,
+    rgba(242, 247, 245, 0.92) 46%,
+    rgba(242, 247, 245, 0.84) 68%,
+    rgba(242, 247, 245, 0.76) 100%
+  );
+  position: relative;
+  isolation: isolate;
+}
+
+.theme-security {
+  --surface: #050706;
+  --surface-elevated: #0b100e;
+  --surface-muted: #111816;
+  --foreground: #eff6f0;
+  --muted: #9ba8a0;
+  --accent: #7dffb2;
+  --line: rgba(125, 255, 178, 0.18);
+  --control: rgba(11, 16, 14, 0.82);
+  --active-bg: #7dffb2;
+  --active-text: #06100c;
+  --action-bg: #7dffb2;
+  --action-text: #06100c;
+  --button-shadow: 0 14px 40px rgba(125, 255, 178, 0.18);
+  --hover-glow: rgba(125, 255, 178, 0.12);
+  --terminal: #020403;
+  --terminal-text: #d9ffe5;
+  --terminal-muted: #6f8576;
+  --terminal-line: rgba(125, 255, 178, 0.18);
+  --hero-overlay: linear-gradient(
+    90deg,
+    rgba(5, 7, 6, 0.98) 0%,
+    rgba(5, 7, 6, 0.88) 48%,
+    rgba(5, 7, 6, 0.62) 100%
+  );
+}
+
+.mode-panel {
+  animation: content-reveal 520ms ease both;
+}
+
+.mode-switch {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.mode-button {
+  transition:
+    background-color 220ms ease,
+    color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+.mode-button:hover {
+  transform: translateY(-1px);
+}
+
+.mode-button svg,
+.action-primary svg,
+.action-secondary svg,
+.action-link svg {
+  transition: transform 220ms ease;
+}
+
+.mode-button:hover svg,
+.action-primary:hover svg,
+.action-secondary:hover svg,
+.action-link:hover svg {
+  transform: translateX(2px);
+}
+
+.action-primary {
+  border: 1px solid transparent;
+  background: var(--action-bg);
+  color: var(--action-text);
+  box-shadow: var(--button-shadow);
+}
+
+.action-secondary,
+.action-link {
+  color: var(--foreground);
+}
+
+.action-primary,
+.action-secondary,
+.action-link,
+.stack-chip {
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease,
+    color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.action-primary:hover,
+.action-secondary:hover,
+.action-link:hover,
+.stack-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.action-primary:hover {
+  color: var(--action-text);
+  filter: brightness(1.04);
+}
+
+.interactive-surface {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    transform 240ms ease,
+    border-color 240ms ease,
+    box-shadow 240ms ease,
+    background-color 240ms ease;
+}
+
+.interactive-surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    360px circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+    var(--hover-glow),
+    transparent 42%
+  );
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.interactive-surface > * {
+  position: relative;
+  z-index: 1;
+}
+
+.interactive-surface:hover {
+  border-color: color-mix(in srgb, var(--accent), transparent 34%);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.interactive-surface:hover::before {
+  opacity: 1;
+}
+
+.terminal-row {
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.terminal-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--accent);
+  transform: translateX(2px);
+}
+
+.project-media img {
+  transition: transform 520ms ease, filter 520ms ease;
+}
+
+.interactive-surface:hover .project-media img {
+  transform: scale(1.035);
+  filter: saturate(1.08) contrast(1.02);
+}
+
+.profile-card {
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.08);
+}
+
+.profile-card img {
+  filter: grayscale(1) contrast(1.04);
+  transition:
+    filter 420ms ease,
+    transform 420ms ease;
+}
+
+.profile-card:hover img {
+  filter: grayscale(0.45) contrast(1.05);
+  transform: scale(1.025);
+}
+
+.theme-security::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(125, 255, 178, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 255, 178, 0.035) 1px, transparent 1px);
+  background-size: 34px 34px;
+  opacity: 0.35;
+}
+
+.theme-backend::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(23, 25, 27, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 25, 27, 0.035) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.38;
+}
+
+@keyframes content-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 760px) {
+  .portfolio-root {
+    --hero-overlay: linear-gradient(
+      180deg,
+      rgba(242, 247, 245, 0.96) 0%,
+      rgba(242, 247, 245, 0.91) 62%,
+      rgba(242, 247, 245, 0.84) 100%
+    );
+  }
+
+  .theme-security {
+    --hero-overlay: linear-gradient(
+      180deg,
+      rgba(5, 7, 6, 0.96) 0%,
+      rgba(5, 7, 6, 0.9) 62%,
+      rgba(5, 7, 6, 0.84) 100%
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
 }

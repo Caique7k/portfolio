@@ -13,9 +13,9 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Caique da Silva Alves | Desenvolvedor Backend",
+  title: "Caique da Silva Alves | Backend e Cibersegurança",
   description:
-    "Portfólio de Caique da Silva Alves com foco em backend, APIs REST, NestJS, PostgreSQL, autenticação JWT/RBAC, WebSocket e sistemas orientados a operação real.",
+    "Portfólio de Caique da Silva Alves com trilhas de Backend em Node.js/NestJS e Cibersegurança com foco em Offensive Security, Pentest e AppSec.",
 };
 
 export default function RootLayout({
