@@ -1,7 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { type PointerEvent, useMemo, useState } from "react";
+import {
+  type PointerEvent,
+  useEffect,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import {
   FaArrowRight,
   FaArrowUpRightFromSquare,
@@ -14,21 +20,63 @@ import {
   FaTerminal,
 } from "react-icons/fa6";
 import {
-  contactLinks,
-  experienceTimeline,
-  tracks,
+  portfolioContent,
+  type Language,
   type PortfolioMode,
   type Project,
 } from "./portfolio-data";
 
+const LANGUAGE_STORAGE_KEY = "portfolio-language";
+const LANGUAGE_CHANGE_EVENT = "portfolio-language-change";
+
 const modeOptions: {
   mode: PortfolioMode;
   icon: typeof FaServer;
-  label: string;
 }[] = [
-  { mode: "backend", icon: FaServer, label: "Backend" },
-  { mode: "security", icon: FaShieldHalved, label: "Cibersegurança" },
+  { mode: "backend", icon: FaServer },
+  { mode: "security", icon: FaShieldHalved },
 ];
+
+const languageOptions: { language: Language; label: string }[] = [
+  { language: "pt", label: "PT" },
+  { language: "en", label: "EN" },
+];
+
+type ModeLabels = Record<PortfolioMode, { label: string; shortLabel: string }>;
+
+function isLanguage(value: string | null): value is Language {
+  return value === "pt" || value === "en";
+}
+
+function getStoredLanguage(): Language {
+  if (typeof window === "undefined") {
+    return "pt";
+  }
+
+  const storedLanguage = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+
+  return isLanguage(storedLanguage) ? storedLanguage : "pt";
+}
+
+function getServerLanguageSnapshot(): Language {
+  return "pt";
+}
+
+function subscribeToLanguageChange(callback: () => void) {
+  if (typeof window === "undefined") {
+    return () => undefined;
+  }
+
+  const listener = () => callback();
+
+  window.addEventListener("storage", listener);
+  window.addEventListener(LANGUAGE_CHANGE_EVENT, listener);
+
+  return () => {
+    window.removeEventListener("storage", listener);
+    window.removeEventListener(LANGUAGE_CHANGE_EVENT, listener);
+  };
+}
 
 function setPointerGlow(event: PointerEvent<HTMLElement>) {
   const rect = event.currentTarget.getBoundingClientRect();
@@ -70,20 +118,25 @@ function SectionHeader({
 function ModeSwitch({
   mode,
   setMode,
+  labels,
   compact = false,
 }: {
   mode: PortfolioMode;
   setMode: (mode: PortfolioMode) => void;
+  labels: ModeLabels;
   compact?: boolean;
 }) {
   return (
     <div
       className={`mode-switch inline-grid grid-cols-2 border border-[var(--line)] bg-[var(--control)] p-1 ${
-        compact ? "w-full sm:w-auto" : "w-full max-w-md"
+        compact ? "w-auto" : "w-full max-w-md"
       } rounded-lg`}
     >
-      {modeOptions.map(({ mode: optionMode, icon: Icon, label }) => {
+      {modeOptions.map(({ mode: optionMode, icon: Icon }) => {
         const active = optionMode === mode;
+        const optionLabel = compact
+          ? labels[optionMode].shortLabel
+          : labels[optionMode].label;
 
         return (
           <button
@@ -98,7 +151,44 @@ function ModeSwitch({
             }`}
           >
             <Icon className="text-sm" />
-            <span>{compact ? tracks[optionMode].shortLabel : label}</span>
+            <span>{optionLabel}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function LanguageSwitch({
+  language,
+  setLanguage,
+  ariaLabel,
+}: {
+  language: Language;
+  setLanguage: (language: Language) => void;
+  ariaLabel: string;
+}) {
+  return (
+    <div
+      aria-label={ariaLabel}
+      className="mode-switch inline-grid grid-cols-2 border border-[var(--line)] bg-[var(--control)] p-1 rounded-lg"
+    >
+      {languageOptions.map((option) => {
+        const active = option.language === language;
+
+        return (
+          <button
+            key={option.language}
+            type="button"
+            aria-pressed={active}
+            onClick={() => setLanguage(option.language)}
+            className={`mode-button flex min-h-11 items-center justify-center rounded-md px-3 text-sm font-medium transition ${
+              active
+                ? "bg-[var(--active-bg)] text-[var(--active-text)] shadow-[var(--button-shadow)]"
+                : "text-[var(--muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--foreground)]"
+            }`}
+          >
+            {option.label}
           </button>
         );
       })}
@@ -146,8 +236,16 @@ function TerminalPanel({
   );
 }
 
-function ProfileCard({ mode }: { mode: PortfolioMode }) {
-  const label = mode === "backend" ? "backend" : "appsec";
+function ProfileCard({
+  mode,
+  title,
+  photoAlt,
+}: {
+  mode: PortfolioMode;
+  title: string;
+  photoAlt: string;
+}) {
+  const badge = mode === "backend" ? "backend" : "appsec";
 
   return (
     <article
@@ -157,21 +255,21 @@ function ProfileCard({ mode }: { mode: PortfolioMode }) {
       <div className="flex items-center justify-between border-b border-[var(--line)] px-2 pb-3">
         <div>
           <p className="text-xs font-semibold uppercase text-[var(--accent)]">
-            profile.card
+            {title}
           </p>
           <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">
             Caique da Silva Alves
           </p>
         </div>
         <span className="border border-[var(--line)] bg-[var(--surface-muted)] px-2.5 py-1 font-mono text-xs text-[var(--muted)] rounded-md">
-          {label}
+          {badge}
         </span>
       </div>
 
       <div className="mt-3 overflow-hidden border border-[var(--line)] bg-[var(--surface-muted)] rounded-md">
         <Image
           src="/foto-perfil.png"
-          alt="Foto de Caique da Silva Alves"
+          alt={photoAlt}
           width={900}
           height={1200}
           priority
@@ -282,17 +380,52 @@ function ProjectCard({ project, featured = false }: { project: Project; featured
 
 export default function Home() {
   const [mode, setMode] = useState<PortfolioMode>("backend");
-  const track = tracks[mode];
+  const language = useSyncExternalStore(
+    subscribeToLanguageChange,
+    getStoredLanguage,
+    getServerLanguageSnapshot,
+  );
+  const content = portfolioContent[language];
+  const { ui } = content;
+  const track = content.tracks[mode];
   const [featuredProject, ...secondaryProjects] = track.projects;
+  const modeLabels = useMemo(
+    () => ({
+      backend: {
+        label: content.tracks.backend.label,
+        shortLabel: content.tracks.backend.shortLabel,
+      },
+      security: {
+        label: content.tracks.security.label,
+        shortLabel: content.tracks.security.shortLabel,
+      },
+    }),
+    [content.tracks.backend.label, content.tracks.backend.shortLabel, content.tracks.security.label, content.tracks.security.shortLabel],
+  );
+
+  useEffect(() => {
+    document.documentElement.lang = language === "pt" ? "pt-BR" : "en";
+  }, [language]);
+
+  function handleLanguageChange(nextLanguage: Language) {
+    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLanguage);
+    window.dispatchEvent(new Event(LANGUAGE_CHANGE_EVENT));
+  }
 
   const activeNavigation = useMemo(
     () => [
-      { label: "Experiência", href: "#experiencia" },
-      { label: track.mode === "backend" ? "Stack" : "Trilha", href: "#stack" },
-      { label: track.mode === "backend" ? "Projetos" : "Laboratório", href: "#projetos" },
-      { label: "Contato", href: "#contato" },
+      { label: ui.navExperience, href: "#experiencia" },
+      {
+        label: track.mode === "backend" ? ui.navStack : ui.navTrail,
+        href: "#stack",
+      },
+      {
+        label: track.mode === "backend" ? ui.navProjects : ui.navLab,
+        href: "#projetos",
+      },
+      { label: ui.navContact, href: "#contato" },
     ],
-    [track.mode],
+    [track.mode, ui.navContact, ui.navExperience, ui.navLab, ui.navProjects, ui.navStack, ui.navTrail],
   );
 
   return (
@@ -327,7 +460,19 @@ export default function Home() {
                 </a>
               ))}
             </nav>
-            <ModeSwitch mode={mode} setMode={setMode} compact />
+            <div className="flex gap-2">
+              <ModeSwitch
+                mode={mode}
+                setMode={setMode}
+                labels={modeLabels}
+                compact
+              />
+              <LanguageSwitch
+                language={language}
+                setLanguage={handleLanguageChange}
+                ariaLabel={ui.languageLabel}
+              />
+            </div>
           </div>
         </div>
       </header>
@@ -354,7 +499,11 @@ export default function Home() {
             </p>
 
             <div className="mt-8">
-              <ModeSwitch mode={mode} setMode={setMode} />
+              <ModeSwitch
+                mode={mode}
+                setMode={setMode}
+                labels={modeLabels}
+              />
             </div>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -362,7 +511,7 @@ export default function Home() {
                 href="#projetos"
                 className="action-primary inline-flex min-h-11 items-center gap-2 px-4 text-sm font-semibold transition rounded-md"
               >
-                Ver agora
+                {ui.viewNow}
                 <FaArrowRight className="text-xs" />
               </a>
               <a
@@ -380,7 +529,7 @@ export default function Home() {
                 className="action-secondary inline-flex min-h-11 items-center gap-2 border border-[var(--line)] px-4 text-sm font-semibold transition rounded-md"
               >
                 <FaDownload />
-                CV
+                {ui.cv}
               </a>
             </div>
 
@@ -403,7 +552,11 @@ export default function Home() {
           </div>
 
           <div className="mx-auto w-full max-w-sm lg:ml-auto">
-            <ProfileCard mode={mode} />
+            <ProfileCard
+              mode={mode}
+              title={ui.profileCard}
+              photoAlt={ui.profilePhotoAlt}
+            />
           </div>
         </div>
       </section>
@@ -411,13 +564,13 @@ export default function Home() {
       <section id="experiencia" className="border-b border-[var(--line)]">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
           <SectionHeader
-            eyebrow="Experiência"
-            title="Uma base backend que ajuda a pensar segurança com contexto."
-            description="A trajetória profissional combina desenvolvimento, suporte técnico, dados e operação. Essa mistura é útil tanto para construir serviços quanto para investigar onde eles podem falhar."
+            eyebrow={ui.experienceEyebrow}
+            title={ui.experienceTitle}
+            description={ui.experienceDescription}
           />
 
           <div className="mt-8 grid gap-4 lg:grid-cols-3">
-            {experienceTimeline.map((job) => (
+            {content.experienceTimeline.map((job) => (
               <article
                 key={`${job.company}-${job.period}`}
                 className="interactive-surface border border-[var(--line)] bg-[var(--surface-elevated)] p-5 rounded-lg"
@@ -469,7 +622,7 @@ export default function Home() {
               onPointerMove={setPointerGlow}
             >
               <p className="text-xs font-semibold uppercase text-[var(--accent)]">
-                Ferramentas e base técnica
+                {ui.toolsLabel}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {track.stack.map(({ name, icon: Icon }) => (
@@ -555,7 +708,7 @@ export default function Home() {
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
             <div>
               <p className="text-xs font-semibold uppercase text-[var(--accent)]">
-                Contato
+                {ui.contactEyebrow}
               </p>
               <h2 className="mt-3 text-3xl font-semibold text-[var(--foreground)] sm:text-4xl">
                 {track.contactTitle}
@@ -569,7 +722,7 @@ export default function Home() {
                   className="action-primary inline-flex min-h-11 items-center gap-2 px-4 text-sm font-semibold transition rounded-md"
                 >
                   <FaEnvelope />
-                  Email
+                  {ui.email}
                 </a>
                 <a
                   href={track.githubHref}
@@ -578,13 +731,13 @@ export default function Home() {
                   className="action-secondary inline-flex min-h-11 items-center gap-2 border border-[var(--line)] px-4 text-sm font-semibold transition rounded-md"
                 >
                   <FaGithub />
-                  GitHub
+                  {ui.github}
                 </a>
               </div>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              {contactLinks.map((item) => (
+              {content.contactLinks.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
